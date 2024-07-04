@@ -1,0 +1,27 @@
+.pagina-novo-usuario .container-fluid {
+    background-color: #d75656;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.pagina-novo-usuario h3 {
+    margin-bottom: 20px;
+}
+
+.pagina-novo-usuario .form-group label {
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+}
+
+.pagina-novo-usuario .form-control {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
