@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -18,19 +18,25 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/', [ProfileController::class,'index'])->name('index');
+    Route::get('/', [ProfileController::class, 'index'])->name('index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Chamados
-    Route::get('/avaliacoes/painel', [AvaliacaoController::class,'read']);
-    Route::get('/avaliacoes/nova_avaliacao', [AvaliacaoController::class,'store']);
-    Route::get('/avaliacoes/details_avaliacao/{id}', [AvaliacaoController::class,'details']);
+    //Avaliações
+    Route::get('/avaliacoes/painel', [AvaliacaoController::class, 'read'])->name('avaliacoes.painel');
+    Route::get('/avaliacoes/nova_avaliacao', [AvaliacaoController::class, 'create'])->name('avaliacoes.create');
+    Route::get('/avaliacoes/details_avaliacao/{id}', [AvaliacaoController::class, 'details']);
+    Route::post('/avaliacoes', [AvaliacaoController::class, 'store'])->name('avaliacoes.store');
     
+    //Notificações
+    Route::get('/avaliacoes/notificacao', [NotificationController::class, 'index'])->name('avaliacoes.notificacao');
+
+
+
     //Usuario
-    Route::get('/user/details_user', [UserController::class,'read']);
+    Route::get('/user/details_user', [UserController::class, 'read']);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('audio');
             $table->longText('transcricao')->nullable();
             $table->string('modified_at')->nullable();
+            $table->string('avaliacao')->nullable();
+            $table->string('feedback')->nullable();
             $table->timestamps();
         });
     }
