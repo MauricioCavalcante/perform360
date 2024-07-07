@@ -16,9 +16,12 @@
             </div>
         @else
             @foreach ($notifications as $notification)
-            <div class="alert alert-light" role="alert">
-                {{ $notification->notification }}
-              </div>
+                <div class="alert alert-light d-flex gap-3" role="alert">
+                    {{ $notification->notification }}
+                    @if ($notification->avaliacao)
+                        <a href="/avaliacoes/details_avaliacao/{{ $notification->avaliacao->id }}">Ver avaliação.</a>
+                    @endif
+                </div>
             @endforeach
         @endif
     </main>

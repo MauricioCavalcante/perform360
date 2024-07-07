@@ -1,8 +1,11 @@
 <x-guest-layout>
+
+    <div>
+        <img src="/img/global-hitss.png" style="height: 100px" alt="GlobalHitss">
+    </div>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
-
-
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -32,7 +35,8 @@
 
         <div class="mt-4">
             <x-input-label for="ramal" :value="__('Ramal')" />
-            <x-text-input id="ramal" class="block mt-1 w-full" type="text" name="ramal" :value="old('ramal')" autocomplete="ramal" />
+            <x-text-input id="ramal" class="block mt-1 w-full" type="text" name="ramal" :value="old('ramal')"
+                autocomplete="ramal" />
             <x-input-error :messages="$errors->get('ramal')" class="mt-2" />
         </div>
 
@@ -73,9 +77,12 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <x-primary-button class="ml-4">
-                {{ __('Cadastrar') }}
-            </x-primary-button>
+            <a class="btn me-2 p-1" href="{{ route('user.painel_user') }}">Cancelar</a>
+            <button type="submit"
+                class="btn btn-dark me-2 p-1">
+                Cadastrar
+            </button>
+
         </div>
     </form>
 </x-guest-layout>

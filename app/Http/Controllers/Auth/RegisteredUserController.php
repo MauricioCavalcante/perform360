@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
@@ -70,7 +71,7 @@ class RegisteredUserController extends Controller
 
         } catch (\Exception $e) {
             // Registra o erro no log e retorna para a página de registro com uma mensagem de erro
-            \Log::error('Erro ao registrar usuário: ' . $e->getMessage());
+            Log::error('Erro ao registrar usuário: ' . $e->getMessage());
             return redirect()->route('register')->withErrors(['error' => 'Erro ao registrar usuário.']);
         }
     }

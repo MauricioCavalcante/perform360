@@ -8,8 +8,18 @@
         <h3 class="m-4">Avaliações registradas</h3>
         <!-- Display success message -->
         @if (session('success'))
-        <div class="d-flex justify-content-center alert alert-success text-center">
+        <div class="d-flex justify-content-center align-middle alert alert-primary text-center">
             <p>{{ session('success') }}</p>
+        </div>
+        @endif
+        @if (session('warning'))
+        <div class="d-flex justify-content-center align-middle alert alert-warning text-center">
+            <p>{{ session('warning') }}</p>
+        </div>
+        @endif
+        @if (session('error'))
+        <div class="d-flex justify-content-center align-middle alert alert-danger text-center">
+            <p>{{ session('error') }}</p>
         </div>
         @endif
         <div class="table-responsive">

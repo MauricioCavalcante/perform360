@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    protected $table = 'users';
+    
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -32,10 +35,18 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function findForUsernamable($username)
+
+    // Método para localizar usuário por e-mail ou username
+    public function findForUsername($username)
     {
         return $this->where('email', $username)
                     ->orWhere('username', $username)
                     ->first();
+    }
+
+    // Relacionamento com avaliações
+    public function avaliacoes()
+    {
+        return $this->hasMany(Avaliacao::class, 'id_user');
     }
 }

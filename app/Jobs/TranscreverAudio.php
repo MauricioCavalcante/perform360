@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Avaliacoe;
 use App\Models\Notification;
 
@@ -30,8 +29,9 @@ class TranscreverAudio implements ShouldQueue
     {
         $this->avaliacaoId = $avaliacaoId;
         $this->filePath = $filePath;
-    }
 
+        Log::info("Job de transcrição de áudio iniciado para avaliação ID: " . $this->avaliacaoId);
+    }
     /**
      * Execute the job.
      *
@@ -39,24 +39,55 @@ class TranscreverAudio implements ShouldQueue
      */
     public function handle()
     {
-        // Caminho completo para o script Python de transcrição de áudio
-        $pythonScriptPath = base_path('app/scripts/transcrever_audio.py');
 
-        // Executar o script Python para transcrever o áudio
-        $command = "python3 $pythonScriptPath $this->filePath";
+        ini_set('default_charset', 'UTF-8');
+
+        Log::info("Iniciando job para transcrever áudio para avaliação ID: " . $this->avaliacaoId);
+        Log::info("Iniciando job para transcrever áudio para avaliação Path: " . $this->filePath);
+
+        $pythonExecutable = base_path('myenv\\Scripts\\python.exe');
+        $pythonScriptPath = base_path('app\\scripts\\transcrever_audio.py');
+
+        $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath));
         $output = shell_exec($command);
 
-        // Registre a saída do script Python no arquivo de log do Laravel
-        Log::info("Saída do script Python: $output");
+        if (empty($output)) {
+            Log::error("A saída do script Python está vazia. Comando: $command");
+            return;
+        }
 
-        // Atualizar a avaliação com a transcrição obtida
-        $avaliacao = Avaliacoe::findOrFail($this->avaliacaoId);
-        $avaliacao->transcricao = $output;
-        $avaliacao->save();
+        Log::info("Saída bruta do script Python: " . $output);
 
-        // Criar uma nova notificação para o usuário
-        $notification = new Notification();
-        $notification->notification = 'Nova avaliação disponível!';
-        $notification->save();
+        try {
+            // Garantindo que a saída está em UTF-8
+            $output = mb_convert_encoding($output, 'UTF-8', 'auto');
+
+            Log::info('Transcrição recebida após mb_convert_encoding: ' . $output);
+        } catch (\Exception $e) {
+            Log::error("Erro ao converter a saída para UTF-8: " . $e->getMessage());
+            Log::error("Saída do script Python: " . $output);
+            return;
+        }
+
+        try {
+            $avaliacao = Avaliacoe::findOrFail($this->avaliacaoId);
+            $avaliacao->transcricao = $output;
+            $avaliacao->save();
+            Log::info("Avaliação ID: " . $this->avaliacaoId . " atualizada com sucesso.");
+        } catch (\Exception $e) {
+            Log::error("Erro ao atualizar a avaliação: " . $e->getMessage());
+        }
+
+        Log::info("Job concluído para avaliação ID: " . $this->avaliacaoId);
+
+        try {
+            $notification = new Notification();
+            $notification->notification = "Transcrição da avaliação " . $this->avaliacaoId . " concluída!";
+            $notification->avaliacao_id  = $this->avaliacaoId;
+            $notification->save();
+            Log::info("Notificação criada para avaliação ID: " . $this->avaliacaoId);
+        } catch (\Exception $e) {
+            Log::error("Erro ao criar notificação: " . $e->getMessage());
+        }
     }
 }

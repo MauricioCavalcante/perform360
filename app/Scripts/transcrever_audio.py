@@ -1,21 +1,25 @@
-import os
 import sys
 import whisper
+import torch
 
-# Receber o caminho do arquivo de áudio como argumento
+if len(sys.argv) < 2:
+    print("Erro: Caminho do arquivo de áudio não fornecido.")
+    sys.exit(1)
+
 audio_file = sys.argv[1]
 
+
 try:
-    model = whisper.load_model("large")
+    model = whisper.load_model("large")  
     result = model.transcribe(audio_file)
-    conteudo = result['text']
-    nome_arquivo = os.path.splitext(os.path.basename(audio_file))[0] + '.txt'
+    transcricao_bruto = result['text']  
+    transcricao = transcricao_bruto.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
 
-    with open(nome_arquivo, 'w') as arquivo:
-        arquivo.write(conteudo)
+    # Print output encoded in UTF-8
+    print(transcricao)
 
-    print(result)
-    print(f'Arquivo {nome_arquivo} foi criado com sucesso!')
 
-except RuntimeError as e:
-    print("Erro ao transcrever o áudio:", str(e))
+    
+except Exception as e:
+    print(f"Erro ao transcrever o áudio: {str(e)}", file=sys.stderr) 
+    sys.exit(1)
