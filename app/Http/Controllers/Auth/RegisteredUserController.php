@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUserController extends Controller
 {
@@ -30,16 +30,13 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'ramal' => ['nullable', 'string', 'max:20'],
-            'role' => ['required', 'string', 'in:ATENDENTE,COORDENADOR,PERFIL_DE_QUALIDADE'],
-            'cliente' => ['required', 'array'],
-            'cliente.*' => ['required', Rule::in(['NDFAGA', 'NDFANE'])], // Validação dos valores dos checkboxes
+            'grupos_id' => ['required', 'exists:grupos,id'],
+            'clientes_id' => ['required', 'exists:clientes,id'], // Validação do tipo de cliente
         ]);
 
         // Configuração automática para username
@@ -52,9 +49,8 @@ class RegisteredUserController extends Controller
                 'username' => $username,
                 'password' => Hash::make($request->password),
                 'ramal' => $request->ramal,
-                'score' => 100, // Valor padrão inicial para score
-                'cliente' => implode('/', $request->cliente),
-                'role' => $request->role,
+                'grupos_id' => $request->grupos_id,
+                'clientes_id' => $request->clientes_id, // Associa o tipo de cliente ao usuário
             ]);
 
             // Verifica se o usuário foi criado com sucesso
@@ -67,10 +63,9 @@ class RegisteredUserController extends Controller
             Auth::login($user);
 
             return redirect()->route('index');
-
         } catch (\Exception $e) {
             // Registra o erro no log e retorna para a página de registro com uma mensagem de erro
-            \Log::error('Erro ao registrar usuário: ' . $e->getMessage());
+            Log::error('Erro ao registrar usuário: ' . $e->getMessage());
             return redirect()->route('register')->withErrors(['error' => 'Erro ao registrar usuário.']);
         }
     }

@@ -4,15 +4,12 @@
 
 
 @section('head')
-    <link rel="stylesheet" href="/css/novo_chamado.css">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 @endsection
-
 
 @section('content')
 
-
-
-<main class="container">
+<main class="container-custom">
     <h3>Detalhes do Chamado</h3>
     <div class="row">
         <div class="col table-responsive">
