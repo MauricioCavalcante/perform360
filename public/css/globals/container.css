@@ -1,0 +1,9 @@
+.container-custom {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 30px;
+    width: 90%; /* Largura relativa */
+    max-width: 100%; /* Largura máxima de 100% da largura disponível */
+    margin: auto; /* Centraliza o container na tela */
+}

@@ -51,25 +51,25 @@
         </div>
 
         <div class="mt-4">
-            <x-input-label for="role" :value="__('Perfil')" />
-            <select id="role" name="role" class="block mt-1 w-full" required autocomplete="role">
-                <option value="ATENDENTE" {{ old('role') === 'ATENDENTE' ? 'selected' : '' }}>Atendente</option>
-                <option value="COORDENADOR" {{ old('role') === 'COORDENADOR' ? 'selected' : '' }}>Coordenador</option>
-                <option value="PERFIL_DE_QUALIDADE" {{ old('role') === 'PERFIL_DE_QUALIDADE' ? 'selected' : '' }}>Perfil
-                    de Qualidade</option>
+            <x-input-label for="grupos_id" :value="__('Select Group')" />
+            <select id="grupos_id" name="grupos_id" class="block mt-1 w-full" required>
+                <option value="">Selecione o grupo</option>
+                <option value="1">Admin</option>
+                <option value="2">Coordenador</option>
+                <option value="3">Perfil de Qualidade</option>
+                <option value="4">Atendente</option>
             </select>
-            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+            <x-input-error :messages="$errors->get('grupos_id')" class="mt-2" />
         </div>
 
         <div class="mt-4">
-            <x-input-label for="cliente" :value="__('Cliente')" />
-            <div class="mt-2 space-y-2">
-                <x-checkbox-input name="cliente[]" value="NDFAGA"
-                    :checked="in_array('NDFAGA', old('cliente', []))">{{ __('ANEEL') }}</x-checkbox-input>
-                <x-checkbox-input name="cliente[]" value="NDFANE"
-                    :checked="in_array('NDFANE', old('cliente', []))">{{ __('ANATEL') }}</x-checkbox-input>
-            </div>
-            <x-input-error :messages="$errors->get('cliente')" class="mt-2" />
+            <x-input-label for="clientes_id" :value="__('Select Cliente')" />
+            <select id="clientes_id" name="clientes_id" class="block mt-1 w-full" required>
+                <option value="">Selecione o cliente</option>
+                <option value="1">ANEEL</option>
+                <option value="2">ANATEL</option>
+            </select>
+            <x-input-error :messages="$errors->get('clientes_id')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">

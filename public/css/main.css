@@ -1,0 +1,10 @@
+@import 'globals/base.css';
+@import 'globals/buttons.css';
+@import 'globals/forms.css';
+@import 'globals/tables.css';
+@import 'globals/alerts.css';
+@import 'globals/header.css';
+@import 'globals/variables.css';
+@import 'globals/container.css';
+
+/* Estilos específicos por página podem ser adicionados conforme necessário */

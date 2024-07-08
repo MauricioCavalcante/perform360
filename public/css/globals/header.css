@@ -1,0 +1,22 @@
+header {
+    margin: 10px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    position: sticky;
+  }
+
+  header nav {
+    margin: -8px 8px -8px 8px;
+    background: transparent;
+  }
+
+  header nav img {
+    height: 40px;
+  }
+
+  /* Estilo para os ícones */
+header nav svg {
+    width: 20px; /* Definindo um tamanho padrão */
+    height: 20px;
+    fill: var(--secondary-color); /* Utilizando a variável de cor secundária */
+}

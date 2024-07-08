@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,13 +12,12 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'email',
         'username',
         'password',
+        'email',
         'ramal',
-        'role',
-        'score',
-        'cliente',
+        'grupos_id',
+        'clientes_id',
     ];
 
     protected $hidden = [
@@ -35,7 +35,7 @@ class User extends Authenticatable
     public function findForUsernamable($username)
     {
         return $this->where('email', $username)
-                    ->orWhere('username', $username)
-                    ->first();
+            ->orWhere('username', $username)
+            ->first();
     }
 }
