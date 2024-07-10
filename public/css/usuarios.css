@@ -40,3 +40,7 @@ main {
     text-decoration: underline;
 }
  */
+
+#nameConfigContainer{
+    display: none;
+}

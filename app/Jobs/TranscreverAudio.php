@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use App\Models\Avaliacoe;
+use App\Models\Avaliacao;
 use App\Models\Notification;
 
 class TranscreverAudio implements ShouldQueue
@@ -70,7 +70,7 @@ class TranscreverAudio implements ShouldQueue
         }
 
         try {
-            $avaliacao = Avaliacoe::findOrFail($this->avaliacaoId);
+            $avaliacao = Avaliacao::findOrFail($this->avaliacaoId);
             $avaliacao->transcricao = $output;
             $avaliacao->save();
             Log::info("Avaliação ID: " . $this->avaliacaoId . " atualizada com sucesso.");

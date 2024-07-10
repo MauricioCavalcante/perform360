@@ -82,14 +82,13 @@ class AvaliacaoController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_user' => ['required', 'exists:users,id'],
-            'num_chamado' => ['required', 'string', 'max:255'],
+            'id_user' => ['nullable', 'exists:users,id'],
+            'num_chamado' => ['nullable', 'string', 'max:255'],
             'titulo' => ['required', 'string', 'max:255'],
-            'cliente' => ['required', 'exists:clientes,id'],
+            'cliente_id' => ['nullable', 'exists:clientes,id'],  // Corrigido aqui
         ]);
 
         try {
-
             $avaliacao = Avaliacao::findOrFail($id);
 
             // Verificar se a avaliação foi encontrada
@@ -100,16 +99,16 @@ class AvaliacaoController extends Controller
             // Atualizar os campos com os novos valores do formulário
             $avaliacao->id_user = $request->input('id_user');
             $avaliacao->num_chamado = $request->input('num_chamado');
-            $avaliacao->id_cliente = $request->input('cliente'); // Assumindo que o campo no modelo é 'cliente_id'
+            $avaliacao->id_cliente = $request->input('cliente_id'); // Assumindo que o campo no modelo é 'cliente_id'
             $avaliacao->titulo = $request->input('titulo');
             $avaliacao->save();
 
             // Redirecionar de volta para a página da avaliação com uma mensagem de sucesso
-            return redirect()->route('avaliacoes.details', $avaliacao->id)->with('success', 'Avaliação atualizada!');
-        }  catch (\Exception $e) {
-        // Registrar o erro, se houver
-        Log::error("Erro ao atualizar a avaliação: " . $e->getMessage());
-        return redirect()->back()->with('error', 'Houve um problema ao atualizar a avaliação.');
-    }
+            return redirect()->route('avaliacoes.details_avaliacao', $avaliacao->id)->with('success', 'Avaliação atualizada!');
+        } catch (\Exception $e) {
+            // Registrar o erro, se houver
+            Log::error("Erro ao atualizar a avaliação: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Houve um problema ao atualizar a avaliação.');
+        }
     }
 }

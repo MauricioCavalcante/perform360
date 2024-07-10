@@ -8,8 +8,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    protected $table = 'users';
-    
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -18,9 +16,9 @@ class User extends Authenticatable
         'username',
         'password',
         'ramal',
-        'role',
         'score',
-        'cliente',
+        'grupo_id',
+        'cliente_id',
     ];
 
     protected $hidden = [
@@ -28,15 +26,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
-    // Método para localizar usuário por e-mail ou username
     public function findForUsername($username)
     {
         return $this->where('email', $username)
@@ -44,9 +38,24 @@ class User extends Authenticatable
                     ->first();
     }
 
-    // Relacionamento com avaliações
     public function avaliacoes()
     {
         return $this->hasMany(Avaliacao::class, 'id_user');
     }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class, 'grupo_id');
+    }
+
+    public function clientes()
+    {
+        return $this->belongsToMany(Cliente::class, 'user_cliente', 'user_id', 'cliente_id');
+    }
+    
 }

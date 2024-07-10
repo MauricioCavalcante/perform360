@@ -19,4 +19,10 @@ class Cliente extends Model
     {
         return $this->hasMany(Avaliacao::class, 'id_cliente');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_cliente', 'cliente_id', 'user_id');
+    }
+    
 }
