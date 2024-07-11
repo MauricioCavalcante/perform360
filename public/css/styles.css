@@ -20,7 +20,7 @@ header {
   margin: 10px;
   background-color: var(--primary-color);
   border-radius: 10px;
-  position: sticky;
+
 }
 
 header nav {
@@ -46,3 +46,31 @@ header nav img {
 .table-dark{
     background-color: #000;
 }
+
+#loader{
+  width: 20px;
+  height: 20px;
+  border: 3px solid;
+  border-radius: 50%;
+  position: relative;
+  border-color: gray transparent;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+
+#painel_user{
+  padding: 8px 40px 8px 40px;
+}
+#painel_cliente{
+  padding: 8px 40px 8px 40px;
+
+}
+
+#formCliente {
+  display: none;
+}
+

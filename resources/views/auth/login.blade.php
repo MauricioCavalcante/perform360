@@ -2,6 +2,10 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <div class="flex items-center justify-center mb-3 p-3">
+        <img src="/img/logo_hitssbr.jpg" alt="GlobalHitss">
+    </div>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -19,14 +23,6 @@
             <x-input-error :message="$errors->first('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ml-2 text-sm text-gray-600">{{ __('Lembre de mim') }}</span>
-            </label>
-        </div>
-
         <!-- Hidden Field for Identification -->
         <input type="hidden" name="login_field" value="email_or_username">
 
@@ -41,8 +37,8 @@
 
         <!-- Login Button -->
         <div class="flex items-center justify-end mt-4">
-            <button type="submit" class="btn btn-primary hover:bg-blue-700 text-black font-bold py-2 px-4 rounded">
-                {{ __('Entrar') }}
+            <button type="submit" class="btn btn-dark p-2 font-bold py-2 px-4">
+                Entrar
             </button>
         </div>
     </form>

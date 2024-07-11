@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('avaliacoes', function (Blueprint $table) {
             $table->id();
-            $table->string('id_user')->nullable();
-            $table->string('id_cliente')->nullable();
+            $table->foreignId('id_user')->constrained('users');
+            $table->foreignId('id_cliente')->constrained('clientes');
             $table->string('num_chamado')->nullable();
             $table->string('titulo')->nullable();
             $table->string('audio');
-            $table->longText('transcricao')->nullable();
-            $table->string('modified_at')->nullable();
+            $table->text('transcricao')->nullable();
+            $table->timestamp('modified_at')->nullable();
+            $table->integer('avaliacao')->nullable();
+            $table->text('feedback')->nullable();
             $table->timestamps();
         });
     }
