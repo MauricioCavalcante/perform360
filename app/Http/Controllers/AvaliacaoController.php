@@ -24,35 +24,39 @@ class AvaliacaoController extends Controller
         return view('avaliacoes.painel', ['avaliacoes' => $avaliacoes]);
     }
 
+
+
     public function store(Request $request)
     {
+
         try {
             // Validação do arquivo de áudio
             $request->validate([
-                'audio' => 'required|file',
+                'audio' => 'required|file|max:102400',
             ]);
+    
+           // Processa o upload do arquivo de áudio
+           $file = $request->file('audio');
+           $fileName = 'audio-' . uniqid() . '.' . $file->getClientOriginalExtension();
+           $filePath = $file->storeAs('public/upload', $fileName);
 
-            // Processa o upload do arquivo de áudio
-            $file = $request->file('audio');
-            $fileName = 'audio-' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('public/upload', $fileName);
+           // Cria uma nova instância de Avaliacoe e salva o caminho do arquivo
+           $avaliacao = new Avaliacao();
+           $avaliacao->audio = $filePath;
+           $avaliacao->save();
 
-            // Cria uma nova instância de Avaliacoe e salva o caminho do arquivo
-            $avaliacao = new Avaliacao();
-            $avaliacao->audio = $filePath;
-            $avaliacao->save();
+           // Enfileira o job para transcrever o áudio em segundo plano
+           TranscreverAudio::dispatch($avaliacao->id, storage_path("app/{$avaliacao->audio}"));
 
-            // Enfileira o job para transcrever o áudio em segundo plano
-            TranscreverAudio::dispatch($avaliacao->id, storage_path("app/{$avaliacao->audio}"));
-
-            // Retorna uma resposta para o usuário
-            return redirect('/avaliacoes/painel')->with("warning", "Áudio está sendo transcrito, aguarde!");
-        } catch (\Exception $e) {
-            // Registra o erro
-            Log::error("Erro ao processar o arquivo de áudio: " . $e->getMessage());
-            return redirect('/avaliacoes/painel')->with("error", "Houve um problema ao processar o arquivo de áudio.");
-        }
-    }
+           // Retorna uma resposta para o usuário
+           return redirect('/avaliacoes/painel')->with("warning", "Áudio está sendo transcrito, aguarde!");
+       } catch (\Exception $e) {
+           // Registra o erro
+           Log::error("Erro ao processar o arquivo de áudio: " . $e->getMessage());
+           return redirect('/avaliacoes/painel')->with("error", "Houve um problema ao processar o arquivo de áudio.");
+       }
+   }
+    
 
 
     public function details($id)

@@ -32,6 +32,7 @@ class TranscreverAudio implements ShouldQueue
 
         Log::info("Job de transcrição de áudio iniciado para avaliação ID: " . $this->avaliacaoId);
     }
+
     /**
      * Execute the job.
      *
@@ -39,55 +40,58 @@ class TranscreverAudio implements ShouldQueue
      */
     public function handle()
     {
-
         ini_set('default_charset', 'UTF-8');
 
         Log::info("Iniciando job para transcrever áudio para avaliação ID: " . $this->avaliacaoId);
         Log::info("Iniciando job para transcrever áudio para avaliação Path: " . $this->filePath);
 
-        $pythonExecutable = base_path('myenv\\Scripts\\python.exe');
-        $pythonScriptPath = base_path('app\\scripts\\transcrever_audio.py');
+        // Caminho do executável do Python dentro do ambiente virtual
+        $pythonExecutable = base_path('venv') . '/bin/python3';
+        // Caminho completo para o script Python
+        $pythonScriptPath = base_path('app') . '/Scripts/transcrever_audio.py';
 
-        $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath));
+        // Comando para execução do script Python
+        $command = "$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath);
         $output = shell_exec($command);
 
-        if (empty($output)) {
+        if ($output === null) {
+            Log::error("Erro ao executar o comando: $command");
+        } else if (trim($output) === "") {
             Log::error("A saída do script Python está vazia. Comando: $command");
-            return;
-        }
+        } else {
+            Log::info("Saída bruta do script Python: " . $output);
 
-        Log::info("Saída bruta do script Python: " . $output);
+            try {
+                // Garantindo que a saída está em UTF-8
+                $output = mb_convert_encoding($output, 'UTF-8', 'auto');
+                Log::info('Transcrição recebida após mb_convert_encoding: ' . $output);
+            } catch (\Exception $e) {
+                Log::error("Erro ao converter a saída para UTF-8: " . $e->getMessage());
+                Log::error("Saída do script Python: " . $output);
+                return;
+            }
 
-        try {
-            // Garantindo que a saída está em UTF-8
-            $output = mb_convert_encoding($output, 'UTF-8', 'auto');
+            try {
+                $avaliacao = Avaliacao::findOrFail($this->avaliacaoId);
+                $avaliacao->transcricao = $output;
+                $avaliacao->save();
+                Log::info("Avaliação ID: " . $this->avaliacaoId . " atualizada com sucesso.");
+            } catch (\Exception $e) {
+                Log::error("Erro ao atualizar a avaliação: " . $e->getMessage());
+                return;
+            }
 
-            Log::info('Transcrição recebida após mb_convert_encoding: ' . $output);
-        } catch (\Exception $e) {
-            Log::error("Erro ao converter a saída para UTF-8: " . $e->getMessage());
-            Log::error("Saída do script Python: " . $output);
-            return;
-        }
+            Log::info("Job concluído para avaliação ID: " . $this->avaliacaoId);
 
-        try {
-            $avaliacao = Avaliacao::findOrFail($this->avaliacaoId);
-            $avaliacao->transcricao = $output;
-            $avaliacao->save();
-            Log::info("Avaliação ID: " . $this->avaliacaoId . " atualizada com sucesso.");
-        } catch (\Exception $e) {
-            Log::error("Erro ao atualizar a avaliação: " . $e->getMessage());
-        }
-
-        Log::info("Job concluído para avaliação ID: " . $this->avaliacaoId);
-
-        try {
-            $notification = new Notification();
-            $notification->notification = "Transcrição da avaliação " . $this->avaliacaoId . " concluída!";
-            $notification->avaliacao_id  = $this->avaliacaoId;
-            $notification->save();
-            Log::info("Notificação criada para avaliação ID: " . $this->avaliacaoId);
-        } catch (\Exception $e) {
-            Log::error("Erro ao criar notificação: " . $e->getMessage());
+            try {
+                $notification = new Notification();
+                $notification->notification = "Transcrição da avaliação " . $this->avaliacaoId . " concluída!";
+                $notification->avaliacao_id  = $this->avaliacaoId;
+                $notification->save();
+                Log::info("Notificação criada para avaliação ID: " . $this->avaliacaoId);
+            } catch (\Exception $e) {
+                Log::error("Erro ao criar notificação: " . $e->getMessage());
+            }
         }
     }
 }

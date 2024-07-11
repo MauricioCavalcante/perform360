@@ -12,9 +12,7 @@ try:
     result = model.transcribe(audio_file)
     transcricao_bruto = result['text']  
 
-
     transcricao = transcricao_bruto.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
-
 
     print(transcricao)
 
