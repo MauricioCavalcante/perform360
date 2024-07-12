@@ -11,27 +11,24 @@
         use App\Models\Cliente;
     @endphp
 
-
     <main class="container pagina-usuarios">
+        <h1 class="m-4">Clientes</h1>
+        <hr>
 
-        <h3 class="m-4">Página do Gestor</h3>
         @if (session('delete'))
             <div class="d-flex justify-content-center align-middle alert alert-info text-center">
                 <p>{{ session('delete') }}</p>
             </div>
         @endif
+
         @if (session('success'))
             <div class="d-flex justify-content-center align-middle alert alert-primary text-center">
                 <p>{{ session('success') }}</p>
             </div>
         @endif
-        <div class="d-flex justify-content-center container-fluid m-2 gap-2">
-            <a id="painel_user" class="btn btn-dark"><u>Usuários</u></a>
-            <a id="painel_cliente" class="btn btn-ligth"><u>Clientes</u></a>
-            <a id="painel_cliente" class="btn btn-ligth"><u>Questionários</u></a>
-        </div>
-        <hr>
-        <div id="showClientes">
+
+        <section class="container pagina-usuarios">
+
             <div class="d-flex justify-content-end container-fluid m-2">
                 <a id="novoCliente" class="btn btn-dark" onclick="toggleFormCliente()">Novo Cliente</a>
             </div>
@@ -116,12 +113,8 @@
                         <button class="btn btn-success mt-3" type="submit">Salvar</button>
                     </form>
                 </div>
-
             </div>
-        </div>
-
-
+        </section>
 
     </main>
-
 @endsection

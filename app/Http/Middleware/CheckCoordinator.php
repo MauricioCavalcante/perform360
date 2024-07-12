@@ -15,7 +15,7 @@ class CheckCoordinator
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->role === 'COORDENADOR') {
+        if ($request->user() && $request->user()->grupo_id === 2) {
             return $next($request);
         }
 

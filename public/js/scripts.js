@@ -1,10 +1,10 @@
 
 
-function reload(){
+function reload() {
     window.location.reload();
 }
 
-// script.js
+// Script Avaliação (details_avaliacao.blade.php) --------------------------------------------------------
 function exibirFormEditar() {
     let form = document.getElementById('formEditar');
     let table = document.getElementById('avaliacao');
@@ -29,22 +29,43 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('formEditar').style.display = 'none';
 });
 
+// Fim Script Avaliação --------------------------------------------------------
 
+// Script Novo e Editar Cliente (painel_user.blade.php) --------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('nameConfigContainer').style.display = 'none';
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editButtons = document.querySelectorAll('button[id^="showFormEditarCliente"]');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const clienteId = this.getAttribute('data-id');
+            fetch(`/clientes/${clienteId}`)
+                .then(response => response.json())
+                .then(cliente => {
+                    const formEditarCliente = document.getElementById('formEditarCliente');
+                    formEditarCliente.style.display = 'block';
+                    formEditarCliente.querySelector('form').action = `/clientes/${cliente.id}`;
+                    document.getElementById('name').value = cliente.name;
+                    document.getElementById('projeto').value = cliente.projeto;
+                })
+                .catch(error => console.error('Erro:', error));
+        });
+    });
+});
 
 function toggleFormCliente() {
-    let formCliente = document.getElementById('formCliente');
+    let formNovoCliente = document.getElementById('formNovoCliente');
 
-    if (formCliente.style.display === 'none' || formCliente.style.display === '') {
-        formCliente.style.display = 'block';
+    if (formNovoCliente.style.display === 'none' || formNovoCliente.style.display === '') {
+        formNovoCliente.style.display = 'block';
     } else {
-        formCliente.style.display = 'none';
+        formNovoCliente.style.display = 'none';
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Inicializar a visibilidade dos elementos ao carregar a página
-    document.getElementById('nameConfigContainer').style.display = 'none';
-});
 
 
 

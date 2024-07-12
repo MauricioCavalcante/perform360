@@ -11,7 +11,7 @@ class Avaliacao extends Model
     protected $table = 'avaliacoes';
 
     protected $fillable = [
-        'id_user', 'id_cliente', 'num_chamado', 'titulo', 'audio', 'transcricao', 'modified_at', 'avaliacao', 'feedback'
+        'id_user', 'id_cliente', 'num_chamado', 'usuario', 'audio', 'transcricao', 'modified_at', 'avaliacao', 'feedback'
     ];
 
     protected $casts = [

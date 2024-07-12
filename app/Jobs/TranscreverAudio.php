@@ -40,18 +40,16 @@ class TranscreverAudio implements ShouldQueue
      */
     public function handle()
     {
+
         ini_set('default_charset', 'UTF-8');
 
         Log::info("Iniciando job para transcrever áudio para avaliação ID: " . $this->avaliacaoId);
-        Log::info("Iniciando job para transcrever áudio para avaliação Path: " . $this->filePath);
+        Log::info("Caminho do arquivo de áudio: " . $this->filePath);
 
-        // Caminho do executável do Python dentro do ambiente virtual
-        $pythonExecutable = base_path('venv') . '/bin/python3';
-        // Caminho completo para o script Python
-        $pythonScriptPath = base_path('app') . '/Scripts/transcrever_audio.py';
+        $pythonExecutable = base_path('venv\\Scripts\\python.exe');
+        $pythonScriptPath = base_path('app\\scripts\\transcrever_audio.py');
 
-        // Comando para execução do script Python
-        $command = "$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath);
+        $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath));
         $output = shell_exec($command);
 
         if ($output === null) {
@@ -61,15 +59,16 @@ class TranscreverAudio implements ShouldQueue
         } else {
             Log::info("Saída bruta do script Python: " . $output);
 
-            try {
-                // Garantindo que a saída está em UTF-8
-                $output = mb_convert_encoding($output, 'UTF-8', 'auto');
-                Log::info('Transcrição recebida após mb_convert_encoding: ' . $output);
-            } catch (\Exception $e) {
-                Log::error("Erro ao converter a saída para UTF-8: " . $e->getMessage());
-                Log::error("Saída do script Python: " . $output);
-                return;
-            }
+        try {
+            // Garantindo que a saída está em UTF-8
+            $output = mb_convert_encoding($output, 'UTF-8', 'auto');
+
+            Log::info('Transcrição recebida após mb_convert_encoding: ' . $output);
+        } catch (\Exception $e) {
+            Log::error("Erro ao converter a saída para UTF-8: " . $e->getMessage());
+            Log::error("Saída do script Python: " . $output);
+            return;
+        }
 
             try {
                 $avaliacao = Avaliacao::findOrFail($this->avaliacaoId);

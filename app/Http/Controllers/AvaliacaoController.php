@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Avaliacao;
 use App\Models\User;
@@ -20,8 +21,9 @@ class AvaliacaoController extends Controller
 
     public function read()
     {
+        $clientes = Cliente::all();
         $avaliacoes = Avaliacao::orderBy('created_at', 'desc')->get();
-        return view('avaliacoes.painel', ['avaliacoes' => $avaliacoes]);
+        return view('avaliacoes.painel', ['avaliacoes' => $avaliacoes, 'clientes' => $clientes]);
     }
 
 
@@ -40,13 +42,14 @@ class AvaliacaoController extends Controller
            $fileName = 'audio-' . uniqid() . '.' . $file->getClientOriginalExtension();
            $filePath = $file->storeAs('public/upload', $fileName);
 
-           // Cria uma nova instância de Avaliacoe e salva o caminho do arquivo
-           $avaliacao = new Avaliacao();
-           $avaliacao->audio = $filePath;
-           $avaliacao->save();
+            // Cria uma nova instância de Avaliacoe e salva o caminho do arquivo
+            $avaliacao = new Avaliacao();
+            $avaliacao->audio = $filePath;
+            $avaliacao->usuario = Auth::user()->name;
+            $avaliacao->save();
 
-           // Enfileira o job para transcrever o áudio em segundo plano
-           TranscreverAudio::dispatch($avaliacao->id, storage_path("app/{$avaliacao->audio}"));
+            // Enfileira o job para transcrever o áudio em segundo plano
+            TranscreverAudio::dispatch($avaliacao->id, storage_path("app/{$avaliacao->audio}"));
 
            // Retorna uma resposta para o usuário
            return redirect('/avaliacoes/painel')->with("warning", "Áudio está sendo transcrito, aguarde!");
@@ -57,6 +60,7 @@ class AvaliacaoController extends Controller
        }
    }
     
+
 
 
     public function details($id)
@@ -88,7 +92,6 @@ class AvaliacaoController extends Controller
         $request->validate([
             'id_user' => ['nullable', 'exists:users,id'],
             'num_chamado' => ['nullable', 'string', 'max:255'],
-            'titulo' => ['required', 'string', 'max:255'],
             'cliente_id' => ['nullable', 'exists:clientes,id'],  // Corrigido aqui
         ]);
 
@@ -104,7 +107,6 @@ class AvaliacaoController extends Controller
             $avaliacao->id_user = $request->input('id_user');
             $avaliacao->num_chamado = $request->input('num_chamado');
             $avaliacao->id_cliente = $request->input('cliente_id'); // Assumindo que o campo no modelo é 'cliente_id'
-            $avaliacao->titulo = $request->input('titulo');
             $avaliacao->save();
 
             // Redirecionar de volta para a página da avaliação com uma mensagem de sucesso

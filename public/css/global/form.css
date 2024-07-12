@@ -1,0 +1,19 @@
+.form-group label {
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+  }
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+    max-width: 100%; /* Defina o tamanho máximo desejado */
+}
+
+.form-check {
+    margin: 10px 0;
+}

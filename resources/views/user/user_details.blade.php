@@ -29,7 +29,7 @@
                 </tr>
                 <tr>
                     <th>Cliente</th>
-                    <td>{{ Auth::user()->cliente }}</td>
+                    <td>{{ Auth::user()->cliente->name }}</td>
                 </tr>
                 <tr>
                     <th>Perfil</th>

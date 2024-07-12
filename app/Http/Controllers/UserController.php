@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Avaliacao;
 use App\Models\Cliente;
+use App\Models\Questionario;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = User::all();
-        $cliente = Cliente::all();
-        $avaliacao = Avaliacao::all();
+        // Obter todos os usuários, clientes, avaliações e questionários
+        $users = User::all();
+        $clientes = Cliente::all();
+        $avaliacoes = Avaliacao::all();
 
-
-        return view('user.painel_user', ['users' => $user, 'clientes' => $cliente, 'avaliacaos' => $avaliacao]);
+        return view('user.painel_user', [
+            'users' => $users,
+            'clientes' => $clientes,
+            'avaliacoes' => $avaliacoes,
+        ]);
     }
+
 
     public function read()
     {
@@ -28,19 +34,15 @@ class UserController extends Controller
     }
     public function details($id)
     {
-        $user = User::find($id);
+        $users = User::find($id);
+        $clienteIds = json_decode($users->cliente);
 
-        // Decodificar o JSON na coluna cliente para obter um array de IDs de cliente
-        $clienteIds = json_decode($user->cliente);
 
-        // Carregar os objetos Cliente com base nos IDs
         $clientes = Cliente::all();
-        $avaliacao = Avaliacao::where('id_user', $user->id)->get();
+        $avaliacao = Avaliacao::where('id_user', $users->id)->get();
 
-        return view('user.painel_user_details', compact('user', 'avaliacao', 'clientes'));
+        return view('user.painel_user_details', compact('users', 'avaliacao', 'clientes'));
     }
-
-
     public function updateName(Request $request, $id)
     {
         $user = User::find($id);
@@ -81,4 +83,46 @@ class UserController extends Controller
         return redirect()->route('user.painel_user_details', ['id' => $user->id, 'avaliacaos' => $avaliacao, 'clientes' => $cliente])
             ->with('status', 'Dados atualizados com sucesso.');
     }
+    public function viewUsuarios(){
+        $users = User::all();
+        $cliente = Cliente::all();
+        $avaliacao = Avaliacao::all();
+
+        return view('user.painel_usuarios', ['avaliacaos' => $avaliacao, 'clientes' => $cliente, 'users'=> $users]);
+    }
+    
+    public function viewClientes(){
+  
+        $clientes = Cliente::all();
+        $avaliacaos = Avaliacao::all();
+
+        return view('user.painel_clientes', ['avaliacaos' => $avaliacaos, 'clientes' => $clientes]);
+    }
+    
+    public function viewQuestionarios(Request $request){
+
+        $clientes = Cliente::all();
+
+        $query = Questionario::query();
+
+        $filtroClienteId = $request->get('cliente_id');
+        if ($filtroClienteId) {
+            // Filtrar os questionários pelo cliente selecionado
+            $query->where('cliente_id', 'like', "%$filtroClienteId%");
+        }
+
+        $questionarios = $query->get();
+        $somaDasNotas = $questionarios->sum('nota');
+
+        $avaliacaos = Avaliacao::all();
+        return view('user.painel_questionarios', [
+            'avaliacaos' => $avaliacaos, 
+            'clientes' => $clientes,
+            'questionarios' => $questionarios,
+            'somaDasNotas' => $somaDasNotas,
+            'filtroClienteId' => $filtroClienteId,
+        ]);
+    }
+
 }
+    

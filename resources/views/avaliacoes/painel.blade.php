@@ -27,7 +27,7 @@
                 <thead>
                     <tr class='align-middle text-nowrap text-center'>
                         <th>ID_Avaliação</th>
-                        <th>Áudio</th>
+                        <th>Cliente</th>
                         <th>Registro</th>
                         <th>Avaliação</th>
                         <th>FeedBack</th>
@@ -37,10 +37,17 @@
                 <tbody>
                     @forelse ($avaliacoes as $avaliacao)
                         <tr class="text-center align-middle">
-                            <td><a href="/avaliacoes/details_avaliacao/{{ $avaliacao->id }}">{{ $avaliacao->id }}</a></td>
+                            <td>{{ $avaliacao->id }}</td>
                             <td>
                                 @if ($avaliacao->audio)
-                                        {{$avaliacao->audio}}
+
+                                        <a href="/avaliacoes/details_avaliacao/{{ $avaliacao->id }}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                            @isset($avaliacao->cliente)
+                                                {{ $avaliacao->cliente->name ?? 'Cliente sem nome' }}
+                                            @else
+                                                <p>Não definido</p>
+                                            @endisset
+                                        </a>
                                 @else
                                     <p>Nenhum áudio disponível.</p>
                                 @endif
