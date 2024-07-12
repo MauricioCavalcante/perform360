@@ -1,0 +1,9 @@
+.container-custom {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 30px;
+    width: 90%; 
+    max-width: 100%; 
+    margin: auto;
+}

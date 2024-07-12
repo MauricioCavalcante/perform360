@@ -25,9 +25,18 @@
                                     <li><a class="dropdown-item" href="{{ route('avaliacoes.painel') }}">Painel</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item"><a class="nav-link"
-                                    href="{{ route('user.painel_user') }}">Painel Gestor</a></li>
-                            @if (Auth::user()->role === 'COORDENADOR')
+                            @if (Auth::user()->grupo_id === 2 || Auth::user()->grupo_id === 1)
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Configurações
+                                    </a>
+                                    <ul class="dropdown-menu w-25">
+                                        <li><a class="dropdown-item" href="{{ route('user.painel_usuarios') }}">Usuários</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('user.painel_clientes') }}">Clientes</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('user.painel_questionarios') }}">Questionários</a></li>
+                                    </ul>
+                                </li>
+                                
                             @endif
                             <li class="nav-item"><a class="nav-link" href="">Procedimentos</a></li>
                         </ul>
@@ -77,24 +86,24 @@
                             <li><a class="dropdown-item" href="{{ route('user.user_details') }}">Perfil</a></li>
                             <li><a class="dropdown-item" href="#">Meus Chamados</a></li>
                             <li><a class="dropdown-item" href="{{ route('avaliacoes.notificacao') }}">Notificações</a>
-                                <li class="nav-item"><a class="nav-link"
-                                        href="{{ route('user.painel_user') }}">Painel Gestor</a></li>
-                                @if (Auth::user()->role === 'COORDENADOR')
+                            <li class="nav-item"><a class="nav-link" href="{{ route('user.painel_user') }}">Painel
+                                    Gestor</a></li>
+                            @if (Auth::user()->role === 'COORDENADOR')
                             @endif
-                            </li>
-                            <li><a class="dropdown-item" href=""><u>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-
-                                            <x-dropdown-link :href="route('logout')"
-                                                onclick="event.preventDefault();
-                                            this.closest('form').submit();">
-                                                {{ __('Sair') }}
-                                            </x-dropdown-link>
-                                        </form>
-                                    </u></a></li>
-                        </ul>
                     </li>
+                    <li><a class="dropdown-item" href=""><u>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+
+                                    <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                                        {{ __('Sair') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </u></a></li>
+                </ul>
+                </li>
                 </ul>
             </nav>
         </div>

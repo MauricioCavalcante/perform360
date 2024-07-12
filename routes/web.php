@@ -11,6 +11,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\QuestionarioController;
 
 use App\Http\Middleware\CheckCoordinator;
 
@@ -45,14 +46,32 @@ Route::middleware('auth')->group(function () {
     //Usuario
     Route::get('/user/user_details', [UserController::class, 'read'])->name('user.user_details');
     Route::get('/user/update_user', [UserController::class, 'update'])->name('user.update_user');
-    Route::get('/user/painel_user', [UserController::class, 'index'])->name('user.painel_user');
     Route::get('/user/painel_user_details/{id}', [UserController::class, 'details'])->name('user.painel_user_details');
     Route::put('/user/painel_user_details/update/{id}', [UserController::class, 'updateUser'])->name('user.updateUser');
     Route::put('/user/painel_user_details/update-name/{id}', [UserController::class, 'updateName'])->name('user.updateName');
     Route::get('/cliente', [ClienteController::class, 'index'])->name('cliente.index');
     Route::post('/cliente', [ClienteController::class, 'store'])->name('cliente.store');
     Route::delete('/cliente/{id}', [ClienteController::class, 'destroy'])->name('cliente.destroy');
+    Route::put('/clientes/{id}', [ClienteController::class, 'update'])->name('cliente.update');
+    Route::get('/clientes/{id}', [ClienteController::class, 'show']);
 
+    //Questionario
+    // Rota para a página inicial dos questionários, onde as perguntas cadastradas serão listadas
+    Route::get('/questionarios', [QuestionarioController::class, 'index'])->name('questionarios.index');
+    // Rota para o formulário de criação de uma nova pergunta
+    Route::get('/questionarios/create', [QuestionarioController::class, 'cadastrarPergunta'])->name('questionarios.create');
+    // Rota para editar os dados do formulário de criação de uma nova pergunta
+    Route::get('/questionarios/{questionario}/edit', [QuestionarioController::class, 'editarPergunta'])->name('questionarios.edit');
+    // Rota para enviar os dados do formulário de criação de uma nova pergunta
+    Route::post('/questionarios', [QuestionarioController::class, 'store'])->name('questionarios.store');
+    // Rota para atualizar os dados do formulário de criação de uma nova pergunta
+    Route::put('/questionarios/{questionario}', [QuestionarioController::class, 'updatePergunta'])->name('questionarios.update');
+    // Rota para deletar os dados do formulário de criação de uma nova pergunta
+    Route::delete('/questionarios/{questionario}', [QuestionarioController::class, 'deletePergunta'])->name('questionarios.delete');
+    Route::get('/user/painel_user', [UserController::class, 'index'])->name('user.painel_user');
+    Route::get('/user/painel_usuarios', [UserController::class, 'viewUsuarios'])->name('user.painel_usuarios');
+    Route::get('/user/painel_clientes', [UserController::class, 'viewClientes'])->name('user.painel_clientes');
+    Route::get('/user/painel_questionarios', [UserController::class, 'viewQuestionarios'])->name('user.painel_questionarios');
 });
 
 //Acesso limitado aos coordenadores

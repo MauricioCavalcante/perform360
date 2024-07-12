@@ -21,7 +21,7 @@
             <div class="d-flex">
                 <div id="nameUser" class="align-items-center">
                     <div class="d-flex">
-                        <h3 class="mt-4 ms-4" id="nome">{{ $user->name }}</h3>
+                        <h3 class="mt-4 ms-4" id="nome">{{ $users->name }}</h3>
                         <button class="btn p-1 m-1" id="toggleNameConfigBtn" onclick="toggleNameConfigEdit()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -34,12 +34,12 @@
                     </div>
                 </div>
             </div>
-            <div id="nameConfigContainer" class="align-items-center" style="display: none;">
-                <form action="{{ route('user.updateName', ['id' => $user->id]) }}" method="post" class="d-flex gap-2">
+            <div id="nameConfigContainer" class="align-items-center mt-4 ms-4 " style="display: none;">
+                <form action="{{ route('user.updateName', ['id' => $users->id]) }}" method="post" class="d-flex gap-2">
                     @csrf
                     @method('PUT')
                     <h3>
-                        <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required>
+                        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name', $users->name)" required autofocus autocomplete="name" />
                         <x-input-error class="mt-2" :messages="$errors->get('name')" />
                     </h3>
                     <div class="d-flex align-items-center gap-1">
@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="d-flex ms-auto">
-            <span class="z-n1 alert alert-success d-flex align-items-center ms-auto me-5">{{ $user->score }} Pontos</span>
+            <span class="z-n1 alert alert-success d-flex align-items-center ms-auto me-5">{{ $users->score }} Pontos</span>
         </div>
 
         <div class="row mb-3">
@@ -75,11 +75,11 @@
 
             </div>
             <div id="infoUser" class="col">
-                <div>{{ $user->username }}</div>
-                <div class="mt-2">{{ $user->email }}</div>
+                <div>{{ $users->username }}</div>
+                <div class="mt-2">{{ $users->email }}</div>
                 <div class="mt-2">
                     @php
-                    $clienteIds = explode(',', $user->cliente_id);
+                    $clienteIds = explode(',', $users->cliente_id);
                     $nomesClientes = [];
 
                     foreach ($clienteIds as $clienteId) {
@@ -91,8 +91,8 @@
                 @endphp
                 {{ implode('/ ', $nomesClientes) }}
                 </div>
-                <div class="mt-2">{{ $user->grupo->name }}</div>
-                <div class="mt-2">{{ $user->ramal }}</div>
+                <div class="mt-2">{{ $users->grupo->name }}</div>
+                <div class="mt-2">{{ $users->ramal }}</div>
             </div>
             
             
@@ -100,13 +100,13 @@
             
             <div id="confiUser" class="col">
                 <div class="d-flex flex-column">
-                    <div>{{ $user->username }}</div>
+                    <div>{{ $users->username }}</div>
                     <div class="d-flex flex-column">
-                        <form action="{{ route('user.updateUser', ['id' => $user->id]) }}" method="post">
+                        <form action="{{ route('user.updateUser', ['id' => $users->id]) }}" method="post">
                             @csrf
                             @method('PUT')
 
-                            <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
+                            <input type="email" id="email" name="email" value="{{ old('email', $users->email) }}"
                                 required><br>
                             <div class="d-flex mt-2 gap-2">
                                 @foreach ($clientes as $cliente)
@@ -125,7 +125,7 @@
                                     de Qualidade</option>
                             </select><br>
                             <input type="text" id="ramal" name="ramal" class="mt-2"
-                                value="{{ old('ramal', $user->ramal) }}"><br>
+                                value="{{ old('ramal', $users->ramal) }}"><br>
 
                             <button type="submit" class="btn btn-success mt-2">Salvar</button>
                         </form>
@@ -160,7 +160,7 @@
                 </thead>
                 <tbody>
                     @foreach ($avaliacao as $avaliacao)
-                        @if ($avaliacao->id_user == $user->id)
+                        @if ($avaliacao->id_user == $users->id)
                             <tr>
                                 <td><a href="/avaliacoes/details_avaliacao/{{ $avaliacao->id }}">{{ $avaliacao->id }}</a>
                                 </td>

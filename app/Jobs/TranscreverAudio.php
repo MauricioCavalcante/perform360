@@ -39,16 +39,16 @@ class TranscreverAudio implements ShouldQueue
      */
     public function handle()
     {
-
-        ini_set('default_charset', 'UTF-8');
-
         Log::info("Iniciando job para transcrever áudio para avaliação ID: " . $this->avaliacaoId);
-        Log::info("Iniciando job para transcrever áudio para avaliação Path: " . $this->filePath);
+        Log::info("Caminho do arquivo de áudio: " . $this->filePath);
 
-        $pythonExecutable = base_path('myenv\\Scripts\\python.exe');
+        $pythonExecutable = base_path('venv\\Scripts\\python.exe');
         $pythonScriptPath = base_path('app\\scripts\\transcrever_audio.py');
 
         $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath));
+        Log::info("Comando a ser executado: $command");
+
+        // Executa o comando e captura a saída
         $output = shell_exec($command);
 
         if (empty($output)) {
@@ -59,13 +59,11 @@ class TranscreverAudio implements ShouldQueue
         Log::info("Saída bruta do script Python: " . $output);
 
         try {
-            // Garantindo que a saída está em UTF-8
+            // Convertendo a saída para UTF-8
             $output = mb_convert_encoding($output, 'UTF-8', 'auto');
-
             Log::info('Transcrição recebida após mb_convert_encoding: ' . $output);
         } catch (\Exception $e) {
             Log::error("Erro ao converter a saída para UTF-8: " . $e->getMessage());
-            Log::error("Saída do script Python: " . $output);
             return;
         }
 

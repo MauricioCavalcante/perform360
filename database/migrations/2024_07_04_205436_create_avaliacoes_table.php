@@ -16,11 +16,11 @@ return new class extends Migration
             $table->foreignId('id_user')->constrained('users');
             $table->foreignId('id_cliente')->constrained('clientes');
             $table->string('num_chamado')->nullable();
-            $table->string('titulo')->nullable();
+            $table->string('usuario')->nullable();
             $table->string('audio');
-            $table->text('transcricao')->nullable();
+            $table->longText('transcricao')->nullable();
             $table->timestamp('modified_at')->nullable();
-            $table->integer('avaliacao')->nullable();
+            $table->float('avaliacao')->nullable()->check('nota BETWEEN 0 AND 100');
             $table->text('feedback')->nullable();
             $table->timestamps();
         });

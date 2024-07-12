@@ -2,11 +2,6 @@
 
 @section('title', 'Avaliação')
 
-@section('head')
-    <link rel="stylesheet" href="/css/novo_chamado.css">
-
-@endsection
-
 @section('content')
     <main class="container">
         <h3 class="m-4">Avaliação - {{ $avaliacao->id }}</h3>
@@ -22,7 +17,8 @@
                     <h6 class="col-auto">Áudio:</h6>
                     @if ($avaliacao->audio)
                         <audio controls>
-                            <source src="{{ Storage::url($avaliacao->audio) }}" type="audio/wav">
+                            <source src="{{ Storage::url($avaliacao->audio) }}"
+                                type="audio/{{ pathinfo($avaliacao->audio, PATHINFO_EXTENSION) }}">
                             Seu navegador não suporta áudio HTML5.
                         </audio>
                     @else
@@ -57,7 +53,7 @@
                                     <button type="submit" class="btn btn-danger">Excluir</button>
                                 </form>
                             @endif
-        
+
                         @endauth
                     </div>
                 </div>
@@ -88,12 +84,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Número do Chamado</th>
+                            <th>Protocolo de Atendimento</th>
                             <td>{{ $avaliacao->num_chamado }}</td>
                         </tr>
                         <tr>
-                            <th>Título do Chamado</th>
-                            <td>{{ $avaliacao->titulo }}</td>
+                            <th>Iniciado por</th>
+                            <td>{{ $avaliacao->usuario }}</td>
                         </tr>
                         <tr>
                             <th>Data de Registro do Chamado</th>
@@ -110,42 +106,39 @@
                     </table>
                 </div>
                 <div id="formEditar">
-                    <form class="form-editar form-group" method="POST" action="{{ route('avaliacoes.update', $avaliacao->id) }}">
+                    <form class="form-editar form-group" method="POST"
+                        action="{{ route('avaliacoes.update', $avaliacao->id) }}">
                         @csrf
                         @method('PUT')
-                
+
                         <div>
                             <label class="form-label" for="id_user"><strong>Atendente</strong></label>
                             <select id="id_user" name="id_user" class="mt-1 block w-full form-control" required>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ $user->id == old('id_user', $avaliacao->id_user) ? 'selected' : '' }}>
+                                    <option value="{{ $user->id }}"
+                                        {{ $user->id == old('id_user', $avaliacao->id_user) ? 'selected' : '' }}>
                                         {{ $user->name }}
                                     </option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('id_user')" />
                         </div>
-                
+
                         <div>
-                            <label class="form-label mt-2" for="num_chamado"><strong>Número do chamado</strong></label>
+                            <label class="form-label mt-2" for="num_chamado"><strong>Protocolo de
+                                    Atendimento</strong></label>
                             <x-text-input id="num_chamado" name="num_chamado" type="text" class="form-control"
                                 :value="old('num_chamado', $avaliacao->num_chamado)" required autofocus autocomplete="num_chamado" />
                             <x-input-error :messages="$errors->get('num_chamado')" />
                         </div>
-                
+
                         <div>
-                            <label class="form-label mt-2" for="titulo"><strong>Titulo do Chamado</strong></label>
-                            <x-text-input id="titulo" name="titulo" type="text" class="mt-1 block w-full form-control"
-                                :value="old('titulo', $avaliacao->titulo)" required autofocus autocomplete="titulo" />
-                            <x-input-error class="mt-2" :messages="$errors->get('titulo')" />
-                        </div>
-                
-                        <div>
-                            <x-input-label class="form-label" for="cliente_id" :value="__('Cliente')" />
+                            <label class="form-label mt-2" for="cliente_id"><strong>Cliente</strong></label>
                             <select id="cliente_id" name="cliente_id" class="mt-1 block w-full form-control">
                                 <option value="">Selecione um cliente</option>
                                 @foreach ($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}" {{ $cliente->id == old('cliente_id', $avaliacao->id_cliente) ? 'selected' : '' }}>
+                                    <option value="{{ $cliente->id }}"
+                                        {{ $cliente->id == old('cliente_id', $avaliacao->id_cliente) ? 'selected' : '' }}>
                                         {{ $cliente->name }}
                                     </option>
                                 @endforeach
@@ -156,7 +149,7 @@
                             <button type="submit" class="btn btn-success ps-5 pe-5">Salvar</button>
                         </div>
                     </form>
-                </div>  
+                </div>
             </div>
         </div>
         <div class="d-flex gap-2">
