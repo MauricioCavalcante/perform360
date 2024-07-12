@@ -10,7 +10,8 @@ audio_file = sys.argv[1]
 try:
     model = whisper.load_model("large")
     result = model.transcribe(audio_file)
-    transcricao_bruto = result['text']
+    transcricao_bruto = result['text']  
+
 
     transcricao = transcricao_bruto.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
 
