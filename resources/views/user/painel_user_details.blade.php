@@ -152,8 +152,8 @@
                         <th>ID</th>
                         <th>Atendente</th>
                         <th>Cliente</th>
-                        <th>Número do Chamado</th>
-                        <th>Título</th>
+                        <th>Protocolo de Atendimento</th>
+                        <th>Iniciado por</th>
                         <th>Registro</th>
                         <th>Avaliação</th>
                     </tr>
@@ -167,7 +167,7 @@
                                 <td>{{ $avaliacao->id_user ? $avaliacao->user->name : 'Não definido' }}</td>
                                 <td>{{ $avaliacao->cliente ? $avaliacao->cliente->name : 'Não definido' }}</td>
                                 <td>{{ $avaliacao->num_chamado }}</td>
-                                <td>{{ $avaliacao->titulo }}</td>
+                                <td>{{ $avaliacao->usuario }}</td>
                                 <td>{{ $avaliacao->created_at }}</td>
                                 <td>{{ $avaliacao->avaliacao }}</td>
                             </tr>

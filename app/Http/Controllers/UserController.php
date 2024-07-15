@@ -7,23 +7,31 @@ use App\Models\Cliente;
 use App\Models\Questionario;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // Obter todos os usuários, clientes, avaliações e questionários
-        $users = User::all();
-        $clientes = Cliente::all();
-        $avaliacoes = Avaliacao::all();
+        $user = Auth::user();
 
-        return view('user.painel_user', [
-            'users' => $users,
-            'clientes' => $clientes,
-            'avaliacoes' => $avaliacoes,
-        ]);
+        if (!$user) {
+            abort(404, 'Usuário não encontrado');
+        }
+
+        $avaliacoes = Avaliacao::orderBy('created_at', 'desc')->get();
+        // $avaliacoes = Avaliacao::where('id_user', $user->id)
+        //     ->orderByDesc('created_at')
+        //     ->get();
+
+
+        $clientes = Cliente::all();
+
+        return view('user.user_details', ['user' => $user, 'avaliacoes' => $avaliacoes, 'clientes' => $clientes]);
     }
+
+
 
 
     public function read()
@@ -83,23 +91,26 @@ class UserController extends Controller
         return redirect()->route('user.painel_user_details', ['id' => $user->id, 'avaliacaos' => $avaliacao, 'clientes' => $cliente])
             ->with('status', 'Dados atualizados com sucesso.');
     }
-    public function viewUsuarios(){
+    public function viewUsuarios()
+    {
         $users = User::all();
         $cliente = Cliente::all();
         $avaliacao = Avaliacao::all();
 
-        return view('user.painel_usuarios', ['avaliacaos' => $avaliacao, 'clientes' => $cliente, 'users'=> $users]);
+        return view('user.painel_usuarios', ['avaliacaos' => $avaliacao, 'clientes' => $cliente, 'users' => $users]);
     }
-    
-    public function viewClientes(){
-  
+
+    public function viewClientes()
+    {
+
         $clientes = Cliente::all();
         $avaliacaos = Avaliacao::all();
 
         return view('user.painel_clientes', ['avaliacaos' => $avaliacaos, 'clientes' => $clientes]);
     }
-    
-    public function viewQuestionarios(Request $request){
+
+    public function viewQuestionarios(Request $request)
+    {
 
         $clientes = Cliente::all();
 
@@ -116,13 +127,11 @@ class UserController extends Controller
 
         $avaliacaos = Avaliacao::all();
         return view('user.painel_questionarios', [
-            'avaliacaos' => $avaliacaos, 
+            'avaliacaos' => $avaliacaos,
             'clientes' => $clientes,
             'questionarios' => $questionarios,
             'somaDasNotas' => $somaDasNotas,
             'filtroClienteId' => $filtroClienteId,
         ]);
     }
-
 }
-    

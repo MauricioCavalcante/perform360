@@ -40,16 +40,22 @@ class TranscreverAudio implements ShouldQueue
      */
     public function handle()
     {
-
+        ini_set('memory_limit', '15G'); 
+        ini_set('max_execution_time', 3600);
         ini_set('default_charset', 'UTF-8');
 
         Log::info("Iniciando job para transcrever áudio para avaliação ID: " . $this->avaliacaoId);
         Log::info("Caminho do arquivo de áudio: " . $this->filePath);
 
-        $pythonExecutable = base_path('venv\\Scripts\\python.exe');
-        $pythonScriptPath = base_path('app\\scripts\\transcrever_audio.py');
+        $pythonInterpreter = config('custom.python_interpreter');
+        $pythonScriptPath = config('custom.python_script_path');
+        $filePath = escapeshellarg($this->filePath);
 
-        $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath));
+
+        $command = "$pythonInterpreter $pythonScriptPath $filePath";
+
+        Log::info("Comando executado: " . $command);
+
         $output = shell_exec($command);
 
         if ($output === null) {

@@ -7,16 +7,11 @@ if len(sys.argv) < 2:
 
 audio_file = sys.argv[1]
 
-try:
-    model = whisper.load_model("large")
-    result = model.transcribe(audio_file)
-    transcricao_bruto = result['text']  
+
+model = whisper.load_model("large")
+result = model.transcribe(audio_file)
+transcricao = result['text']  
 
 
-    transcricao = transcricao_bruto.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
+print(transcricao)
 
-    print(transcricao)
-
-except Exception as e:
-    print(f"Erro ao transcrever o áudio: {str(e)}", file=sys.stderr)
-    sys.exit(1)

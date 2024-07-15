@@ -39,18 +39,15 @@
                         <tr class="text-center align-middle">
                             <td>{{ $avaliacao->id }}</td>
                             <td>
-                                @if ($avaliacao->audio)
-
-                                        <a href="/avaliacoes/details_avaliacao/{{ $avaliacao->id }}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                                            @isset($avaliacao->cliente)
-                                                {{ $avaliacao->cliente->name ?? 'Cliente sem nome' }}
-                                            @else
-                                                <p>Não definido</p>
-                                            @endisset
-                                        </a>
+                                @isset($avaliacao->cliente)
+                                    <a href="/avaliacoes/details_avaliacao/{{ $avaliacao->id }}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                        {{ $avaliacao->cliente->name ?? 'Cliente sem nome' }}
+                                    </a>
                                 @else
-                                    <p>Nenhum áudio disponível.</p>
-                                @endif
+                                    <a href="/avaliacoes/details_avaliacao/{{ $avaliacao->id }}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                        <p>Não definido</p>
+                                    </a>
+                                @endisset
                             </td>
                             <td>
                                 {{ $avaliacao->created_at }}

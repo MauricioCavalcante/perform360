@@ -27,16 +27,19 @@
                             </li>
                             @if (Auth::user()->grupo_id === 2 || Auth::user()->grupo_id === 1)
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                         Configurações
                                     </a>
                                     <ul class="dropdown-menu w-25">
-                                        <li><a class="dropdown-item" href="{{ route('user.painel_usuarios') }}">Usuários</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('user.painel_clientes') }}">Clientes</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('user.painel_questionarios') }}">Questionários</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('user.painel_usuarios') }}">Usuários</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('user.painel_clientes') }}">Clientes</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('user.painel_questionarios') }}">Questionários</a></li>
                                     </ul>
                                 </li>
-                                
                             @endif
                             <li class="nav-item"><a class="nav-link" href="">Procedimentos</a></li>
                         </ul>
@@ -83,27 +86,25 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ route('user.user_details') }}">Perfil</a></li>
-                            <li><a class="dropdown-item" href="#">Meus Chamados</a></li>
-                            <li><a class="dropdown-item" href="{{ route('avaliacoes.notificacao') }}">Notificações</a>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('user.painel_user') }}">Painel
-                                    Gestor</a></li>
-                            @if (Auth::user()->role === 'COORDENADOR')
-                            @endif
-                    </li>
-                    <li><a class="dropdown-item" href=""><u>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('user.user_details') }}">Perfil</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('avaliacoes.notificacao') }}">Notificações</a>
+                            </li>
+                            <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-
                                     <x-dropdown-link :href="route('logout')"
                                         onclick="event.preventDefault();
-                                            this.closest('form').submit();">
+                                            this.closest('form').submit();"
+                                        class="text-white" style="text-decoration: none">
                                         {{ __('Sair') }}
                                     </x-dropdown-link>
                                 </form>
-                            </u></a></li>
-                </ul>
-                </li>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
         </div>

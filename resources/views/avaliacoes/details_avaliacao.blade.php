@@ -15,15 +15,20 @@
             <div class="col-6">
                 <div class="row d-flex align-items-center">
                     <h6 class="col-auto">Áudio:</h6>
-                    @if ($avaliacao->audio)
+                    @if(!empty($avaliacao->audio))
+                        @php
+                            $audioUrl = Storage::url($avaliacao->audio);
+                        @endphp
+
                         <audio controls>
-                            <source src="{{ Storage::url($avaliacao->audio) }}"
-                                type="audio/{{ pathinfo($avaliacao->audio, PATHINFO_EXTENSION) }}">
+                            <source src="{{ $audioUrl }}" type="audio/wav">
                             Seu navegador não suporta áudio HTML5.
+                            <p>Caminho do áudio: {{ $audioUrl }}</p>
                         </audio>
                     @else
                         <p>Nenhum áudio disponível.</p>
                     @endif
+
                 </div>
                 <div>
                     <h5>Transcrição</h5>

@@ -47,8 +47,7 @@
                         </div>
                     </form>
                     <div>
-                        <strong>Soma das Notas:</strong>
-                        <strong>{{ $somaDasNotas }}</strong>
+                        <strong>Soma das Notas: {{ $somaDasNotas }} /100</strong>
                         <a href="{{ route('questionarios.create') }}" class="btn btn-dark m-3">Adicionar Pergunta</a>
                     </div>
                 </div>
