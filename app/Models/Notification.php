@@ -9,11 +9,17 @@ class Notification extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'notification',
+        'reading',
+        'evaluation_id',
+    ];
+
     /**
-     * Get the avaliacao associated with the notification.
+     * Get the evaluation that owns the notification.
      */
-    public function avaliacao()
+    public function evaluation()
     {
-        return $this->belongsTo(Avaliacao::class, 'avaliacao_id');
+        return $this->belongsTo(Evaluation::class, 'evaluation_id');
     }
 }

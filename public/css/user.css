@@ -1,0 +1,99 @@
+.panel_user, .details_user {
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.fillScore {
+    margin: 40px 340px 40px 40px;
+
+    #score {
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+        border: 20px solid;
+        border-color: transparent transparent red red;
+        transform: rotate(-45deg);
+        position: absolute;
+        animation: fillCircle 2s linear forwards;
+    }
+
+    .score {
+        position: absolute;
+        margin-top: 80px;
+        margin-left: 35px;
+    }
+
+    #boxUp {
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+        background: transparent;
+        position: absolute;
+    }
+
+    #boxDown {
+        height: 80px;
+        width: 160px;
+        margin-left: -5px;
+        border-radius: 0 0 80px 80px;
+        margin-top: 73px;
+        background: rgb(255, 255, 255);
+        position: absolute;
+    }
+
+    #indicator {
+        height: 3px;
+        width: 140px;
+        margin-top: 70px;
+        margin-left: 8px;
+        position: absolute;
+        animation: indicator 2s linear forwards;
+    }
+    #indicator::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        /* Metade do indicador será preto */
+        height: 100%;
+        background-color: black;
+    }
+
+    #indicator::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        /* Metade do indicador será vermelho */
+        height: 100%;
+        background-color: transparent;
+    }
+
+}
+@keyframes fillCircle {
+    from {
+        transform: rotate(-50deg);
+        border-color: transparent transparent red red;
+    }
+
+    to {
+        transform: rotate(calc(-60deg + (15deg + var(--fill) * 180deg)));
+        /* 180deg por unidade de fill */
+        border-color: black black yellowgreen yellowgreen;
+    }
+}
+
+@keyframes indicator {
+    from {
+        transform: rotate(-10deg);
+    }
+
+    to {
+        transform: rotate(calc((var(--fill) * 180deg)));
+        /* 180deg por unidade de fill */
+    }
+}

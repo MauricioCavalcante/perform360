@@ -1,76 +1,79 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 .borda {
-  border: 2px solid red;
+    border: 2px solid red;
 }
 :root {
-  --primary-color: #000;
-  --secundary-color: #b3b3b3;
-  --third-color: #474040;
+    --primary-color: #000;
+    --secundary-color: #b3b3b3;
+    --third-color: #474040;
 }
 
-body{
-  background-color: #f8f9fa;
-
-}
 
 header {
-  margin: 10px;
-  background-color: var(--primary-color);
-  border-radius: 10px;
-
+    margin: 10px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
 }
 
 header nav {
-  margin: -8px 8px -8px 8px;
-  background: transparent;
+    margin: -8px 8px -8px 8px;
+    background: transparent;
 }
 
 header nav img {
-  height: 40px;
+    height: 40px;
 }
 
-.pagina-novo-usuario {
-  .container-fluid {
-    background-color: #ff0000;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 30px;
-    max-width: 800px;
-    margin: auto;
-  }
-}
-
-.table-dark{
-    background-color: #000;
-}
-
-#loader{
-  width: 20px;
-  height: 20px;
-  border: 3px solid;
-  border-radius: 50%;
-  position: relative;
-  border-color: gray transparent;
-  animation: spin .7s linear infinite;
+#loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid;
+    border-radius: 50%;
+    position: relative;
+    border-color: gray transparent;
+    animation: spin 0.7s linear infinite;
 }
 
 @keyframes spin {
-  0% {transform: rotate(0deg);}
-  100% {transform: rotate(360deg);}
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-#painel_user{
-  padding: 8px 40px 8px 40px;
+#painel_user {
+    padding: 8px 40px 8px 40px;
 }
-#painel_cliente{
-  padding: 8px 40px 8px 40px;
-
+#painel_cliente {
+    padding: 8px 40px 8px 40px;
 }
 
 #formCliente {
-  display: none;
+    display: none;
+}
+
+.notification-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-bubble {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    min-width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    color: white;
+    text-align: center;
+    line-height: 15px;
+    font-size: 10px;
+    padding: 0 3px;
 }
 

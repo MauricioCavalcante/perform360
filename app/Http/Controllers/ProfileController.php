@@ -11,9 +11,6 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function index(){
-        return view("index");
-    }
     /**
      * Display the user's profile form.
      */
@@ -27,7 +24,6 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
@@ -59,6 +55,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/auth/login');
+        return Redirect::to('/');
     }
 }

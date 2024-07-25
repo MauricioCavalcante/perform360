@@ -2,46 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Avaliacao;
-use App\Models\Cliente;
-use App\Models\Questionario;
+use App\Models\Evaluation;
+use App\Models\Client;
+use App\Models\Questionnaire;
 use App\Models\User;
+use App\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // Obter todos os usuários, clientes, avaliações e questionários
         $users = User::all();
-        $clientes = Cliente::all();
-        $avaliacoes = Avaliacao::all();
+        $clients = Client::all();
+        $evaluations = Evaluation::all();
 
-        return view('user.painel_user', [
-            'users' => $users,
-            'clientes' => $clientes,
-            'avaliacoes' => $avaliacoes,
-        ]);
+
+        return view('users.panel_users', compact('users', 'clients', 'evaluations'));
     }
-
 
     public function read()
     {
-        $cliente = Cliente::all();
-        $avaliacao = Avaliacao::all();
-        return view("user.user_details", ['avaliacaos' => $avaliacao, 'clientes' => $cliente]);
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(404, 'Usuário não encontrado');
+        }
+
+        $evaluation = Evaluation::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        $avgScore = round(Evaluation::where('user_id', $user->id)->avg('score'), 1);
+
+        $client = Client::all();
+
+        return view('users.user', compact('user', 'evaluation', 'client', 'avgScore'));
     }
     public function details($id)
     {
-        $users = User::find($id);
-        $clienteIds = json_decode($users->cliente);
+        $user = User::find($id);
 
+        if (!$user) {
+            return redirect()->route('users.panel_users_details')->with('error', 'Usuário não encontrado.');
+        }
 
-        $clientes = Cliente::all();
-        $avaliacao = Avaliacao::where('id_user', $users->id)->get();
+        $clientIds = json_decode($user->client_id);
+        $clients = Client::all();
+        $group = Group::all();
+        $evaluation = Evaluation::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        $avgScore = round(Evaluation::where('user_id', $user->id)->avg('score'), 1);
 
-        return view('user.painel_user_details', compact('users', 'avaliacao', 'clientes'));
+        return view('users.panel_users_details', compact('user', 'evaluation', 'clients', 'avgScore', 'group'));
     }
     public function updateName(Request $request, $id)
     {
@@ -54,75 +66,39 @@ class UserController extends Controller
         $user->name = $request->input('name');
         $user->save();
 
-        return redirect()->route('user.painel_user_details', ['id' => $user->id])
+        return redirect()->route('users.panel_users_details', ['id' => $user->id])
             ->with('status', 'Nome atualizado com sucesso.');
     }
     public function updateUser(Request $request, $id)
     {
         $user = User::find($id);
-        $cliente = Cliente::all();
-        $avaliacao = Avaliacao::all();
 
         $request->validate([
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'num_chamado' => ['nullable', 'string', 'max:255'],
-            'titulo' => ['required', 'string', 'max:255'],
-            'cliente' => ['nullable', 'exists:clientes,id'],
+                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id),],
+                'phone' => ['nullable', 'string', 'max:255'],
+                'group_id' => ['required', Rule::exists('groups', 'id')],
+                'client_id' => ['nullable', 'array'],
+                'client_id.*' => ['exists:clients,id'],
         ]);
+
 
         if (!$user) {
             return redirect()->back()->with('error', 'Usuário não encontrado.');
         }
 
+        $username = explode('@', $request->email)[0];
+        $clientIds = $request->input('client_id', []);
+
         $user->email = $request->input('email');
-        $user->cliente = $request->input('cliente');
-        $user->role = $request->input('role');
-        $user->ramal = $request->input('ramal');
+        $user->username = $username;
+        $user->client_id = json_encode($clientIds);
+        $user->group_id = $request->input('group_id');
+        $user->phone = $request->input('phone');
         $user->save();
 
-        return redirect()->route('user.painel_user_details', ['id' => $user->id, 'avaliacaos' => $avaliacao, 'clientes' => $cliente])
+        return redirect()->route('users.panel_users_details', ['id' => $user->id])
             ->with('status', 'Dados atualizados com sucesso.');
-    }
-    public function viewUsuarios(){
-        $users = User::all();
-        $cliente = Cliente::all();
-        $avaliacao = Avaliacao::all();
-
-        return view('user.painel_usuarios', ['avaliacaos' => $avaliacao, 'clientes' => $cliente, 'users'=> $users]);
-    }
-    
-    public function viewClientes(){
-  
-        $clientes = Cliente::all();
-        $avaliacaos = Avaliacao::all();
-
-        return view('user.painel_clientes', ['avaliacaos' => $avaliacaos, 'clientes' => $clientes]);
-    }
-    
-    public function viewQuestionarios(Request $request){
-
-        $clientes = Cliente::all();
-
-        $query = Questionario::query();
-
-        $filtroClienteId = $request->get('cliente_id');
-        if ($filtroClienteId) {
-            // Filtrar os questionários pelo cliente selecionado
-            $query->where('cliente_id', 'like', "%$filtroClienteId%");
-        }
-
-        $questionarios = $query->get();
-        $somaDasNotas = $questionarios->sum('nota');
-
-        $avaliacaos = Avaliacao::all();
-        return view('user.painel_questionarios', [
-            'avaliacaos' => $avaliacaos, 
-            'clientes' => $clientes,
-            'questionarios' => $questionarios,
-            'somaDasNotas' => $somaDasNotas,
-            'filtroClienteId' => $filtroClienteId,
-        ]);
     }
 
 }
-    
+

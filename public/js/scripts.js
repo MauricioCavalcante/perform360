@@ -4,10 +4,10 @@ function reload() {
     window.location.reload();
 }
 
-// Script Avaliação (details_avaliacao.blade.php) --------------------------------------------------------
-function exibirFormEditar() {
-    let form = document.getElementById('formEditar');
-    let table = document.getElementById('avaliacao');
+// Script Avaliação (details_evaluation.blade.php) --------------------------------------------------------
+function exibirFormEdit() {
+    let form = document.getElementById('formEdit');
+    let table = document.getElementById('evaluation');
 
 
     if (form && table) {
@@ -23,10 +23,10 @@ function exibirFormEditar() {
     }
 }
 
-document.getElementById('editar').addEventListener('click', exibirFormEditar);
+document.getElementById('edit').addEventListener('click', exibirFormEdit);
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('formEditar').style.display = 'none';
+    document.getElementById('formEdit').style.display = 'none';
 });
 
 // Fim Script Avaliação --------------------------------------------------------
@@ -67,8 +67,6 @@ function toggleFormCliente() {
 }
 
 
-
-
 function toggleNameConfigEdit() {
     let confiUserName = document.getElementById('nameConfigContainer');
     let userName = document.getElementById('nameUser');
@@ -89,3 +87,37 @@ function toggleNameConfigCancel() {
     confiUserName.style.display = 'none';
     userName.style.display = 'block';
 }
+
+// Fim Script Novo e Editar Cliente ---------------------------------
+
+// Script Score --------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', function() {
+    const scoreElement = document.getElementById('score');
+    const indicatorElement = document.getElementById('indicator');
+    const fillValueInput = document.getElementById('fillValue');
+    
+    if (fillValueInput) {
+        fillValueInput.addEventListener('change', function() {
+            const fillValue = parseInt(fillValueInput.value);
+            
+            if (isNaN(fillValue) || fillValue < 0 || fillValue > 100) {
+                alert('Por favor, insira um valor válido de 0 a 100.');
+                return;
+            }
+            
+            // Atualiza o círculo de score
+            updateScoreCircle(fillValue);
+            
+            // Atualiza o indicador
+            updateIndicator(fillValue);
+        });
+    }
+    
+    function updateScoreCircle(fillValue) {
+        if (scoreElement) {
+            scoreElement.style.setProperty('--fill', fillValue / 100);
+            indicatorElement.style.setProperty('--fill', fillValue / 100);
+        }
+    }
+});

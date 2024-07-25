@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
         // Attempt to authenticate the user
         if (Auth::attempt([$field => $credentials['email_or_username'], 'password' => $credentials['password']], $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('index'));
+            return redirect('/');
         }
 
         // If authentication fails, throw a validation exception

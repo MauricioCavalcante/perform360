@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Group;
 use App\Models\User;
-use App\Models\Cliente;
-use App\Models\Grupo;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
@@ -23,9 +22,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        $clientes = Cliente::all();
-        $grupos = Grupo::all();
-        return view('auth.register', compact('clientes', 'grupos'));
+
+        return view('auth.register', [
+            'groups' => \App\Models\Group::all(),
+            'clients' => \App\Models\Client::all(),
+        ]);
     }
 
     /**
@@ -35,50 +36,109 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'ramal' => ['nullable', 'string', 'max:20'],
-            'grupo_id' => ['nullable', Rule::exists('grupos', 'id')],
-            'cliente_id' => ['nullable', 'array'],
-            'cliente_id.*' => ['exists:clientes,id'],
-        ]);
-
-        // Verificar se o grupo_id existe na tabela grupos
-        if ($request->grupo_id && !Grupo::find($request->grupo_id)) {
-            return redirect()->route('register')->withErrors(['grupo_id' => 'Grupo selecionado inválido.']);
-        }
-
-        // Configuração automática para username
-        $username = explode('@', $request->email)[0];
-
+        Log::info('Dados recebidos para registro:', $request->all());
+    
         try {
-            // Converte o array de IDs em uma string separada por vírgula
-            $clienteIds = implode(',', $request->cliente_id);
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'username' => $username,
-                'password' => Hash::make($request->password),
-                'ramal' => $request->ramal,
-                'score' => 100, // Valor padrão inicial para score
-                'grupo_id' => $request->grupo_id,
-                'cliente_id' => $clienteIds, // Salva como string separada por vírgula
+            // Validação dos dados recebidos
+            $validatedData = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'phone' => ['nullable', 'string', 'max:255'],
+                'group_id' => ['required', Rule::exists('groups', 'id')],
+                'client_id' => ['nullable', 'array'],
+                'client_id.*' => ['exists:clients,id'],
             ]);
+    
+            // Extração do nome de usuário a partir do email
+            $username = explode('@', $request->email)[0];
+            $clientIds = $request->input('client_id', []);
 
-            if (!$user) {
-                throw new \Exception('Erro ao criar usuário.');
-            }
-
+            // Criação do usuário no banco de dados
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'username' => $username,
+                'password' => Hash::make($validatedData['password']),
+                'phone' => $validatedData['phone'],
+                'score' => 100,
+                'group_id' => $validatedData['group_id'],
+                'client_id' => json_encode($clientIds),
+            ]);
+            
+            // Log para verificar o usuário criado
+            Log::info('Usuário criado com sucesso', ['user_id' => $user->id, 'name' => $user->name]);
+    
+            // Lançar evento de registro do usuário
             event(new Registered($user));
-
-            return redirect()->route('user.painel_user')->with('success','Usuário criado com sucesso!');
+    
+            // Redirecionamento após sucesso
+            return redirect()->route('register')->with('success', 'Usuário criado com sucesso!');
         } catch (\Exception $e) {
-            // Registra o erro no log e retorna para a página de registro com uma mensagem de erro
+            // Log de erro em caso de falha
             Log::error('Erro ao registrar usuário: ' . $e->getMessage());
+    
+            // Redirecionamento em caso de erro
             return redirect()->route('register')->withErrors(['error' => 'Erro ao registrar usuário.']);
         }
+    
     }
+
+    public function createAdmin(): View
+    {
+        return view('admin.register', [
+            'groups' => \App\Models\Group::all(),
+            'clients' => \App\Models\Client::all(),
+        ]);
+    }
+
+    public function storeAdmin(Request $request): RedirectResponse
+    {
+        Log::info('Dados recebidos para registro:', $request->all());
+    
+        try {
+            // Validação dos dados recebidos
+            $validatedData = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'phone' => ['nullable', 'string', 'max:255'],
+                'group_id' => ['required', Rule::exists('groups', 'id')],
+                'client_id' => ['nullable', 'array'],
+                'client_id.*' => ['exists:clients,id'],
+            ]);
+    
+            // Extração do nome de usuário a partir do email
+            $username = explode('@', $request->email)[0];
+            $clientIds = $request->input('client_id', []);
+
+            // Criação do usuário no banco de dados
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'username' => $username,
+                'password' => Hash::make($validatedData['password']),
+                'phone' => $validatedData['phone'],
+                'score' => 100,
+                'group_id' => $validatedData['group_id'],
+                'client_id' => json_encode($clientIds),
+            ]);
+            
+            // Log para verificar o usuário criado
+            Log::info('Usuário criado com sucesso', ['user_id' => $user->id, 'name' => $user->name]);
+    
+            // Lançar evento de registro do usuário
+            event(new Registered($user));
+    
+            // Redirecionamento após sucesso
+            return redirect()->route('register_admin')->with('success', 'Usuário criado com sucesso!');
+        } catch (\Exception $e) {
+            // Log de erro em caso de falha
+            Log::error('Erro ao registrar usuário: ' . $e->getMessage());
+    
+            // Redirecionamento em caso de erro
+            return redirect()->route('register_admin')->withErrors(['error' => 'Erro ao registrar usuário.']);
+        }
+    }
+    
 }

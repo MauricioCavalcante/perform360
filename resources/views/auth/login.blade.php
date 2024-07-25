@@ -13,14 +13,14 @@
         <div>
             <x-input-label for="email_or_username" :value="__('Email ou Nome de usuário')" />
             <x-text-input id="email_or_username" class="block mt-1 w-full" type="text" name="email_or_username" :value="old('email_or_username')" required autofocus />
-            <x-input-error :message="$errors->first('email_or_username')" class="mt-2" />
+            <x-input-error :messages="$errors->get('email_or_username')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Senha')" />
             <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
-            <x-input-error :message="$errors->first('password')" class="mt-2" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Hidden Field for Identification -->

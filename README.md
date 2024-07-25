@@ -64,3 +64,25 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## Passos para execução do projeto
+
+Executar a criação das tabelas e chaves estrangeiras
+
+    php artisan migrate
+
+Adição de dados 
+
+    php artisan db:seed
+
+Criação de ambiente virtual para execução do script Python
+
+    python -m venv venv
+
+Ativar o ambiente virtual: venv\Scripts\Activate
+    
+    Instalar: pip install openai-whisper
+
+Traduzir para portugues
+https://github.com/lucascudo/laravel-pt-BR-localization

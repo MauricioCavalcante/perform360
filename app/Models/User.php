@@ -10,27 +10,39 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'name',
-        'email',
-        'username',
-        'password',
-        'ramal',
-        'score',
-        'grupo_id',
-        'cliente_id',
+        'name', 'email', 'password', 'phone', 'client_id', 'group_id', 'username', 'score'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'client_id' => 'array',
     ];
 
+    /**
+     * Find a user by their email or username.
+     */
     public function findForUsername($username)
     {
         return $this->where('email', $username)
@@ -38,20 +50,27 @@ class User extends Authenticatable
                     ->first();
     }
 
-    public function avaliacoes()
+    /**
+     * Get the evaluations for the user.
+     */
+    public function evaluation()
     {
-        return $this->hasMany(Avaliacao::class, 'id_user');
+        return $this->hasMany(Evaluation::class, 'user_id');
     }
 
-    public function cliente()
+    /**
+     * Get the client associated with the user.
+     */
+    public function client()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
-    public function grupo()
+    /**
+     * Get the group associated with the user.
+     */
+    public function group()
     {
-        return $this->belongsTo(Grupo::class, 'grupo_id');
+        return $this->belongsTo(Group::class, 'group_id');
     }
-
-    
 }

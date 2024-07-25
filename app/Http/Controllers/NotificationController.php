@@ -2,16 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Evaluation;
 use Illuminate\Http\Request;
 use App\Models\Notification; // Importe o modelo Notification
-use App\Models\Avaliacoe;
+
 
 class NotificationController extends Controller
 {
     public function index()
-{
-    $notifications = Notification::with('avaliacao')->orderBy('created_at', 'desc')->get();
-    return view('avaliacoes.notificacao', compact('notifications'));
-}
+    {   
+        $notifications = Notification::with('evaluation')->orderBy('created_at', 'desc')->get();
+        $sumUnread = $notifications->where('reading', false)->count();
+        return view('notifications.notification', compact('notifications', 'sumUnread',));
+    }
+    public function markReading($id)
+    {
+        $notification = Notification::find($id);
+        if ($notification) {
+            $notification->reading = 1;
+            $notification->save();
+        }
 
+        return redirect()->back();
+    }
 }

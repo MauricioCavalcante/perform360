@@ -20,23 +20,27 @@
                                     Avaliações
                                 </a>
                                 <ul class="dropdown-menu w-25">
-                                    <li><a class="dropdown-item" href="{{ route('avaliacoes.create') }}">Nova
+                                    <li><a class="dropdown-item" href="{{ route('evaluations.create') }}">Nova
                                             avaliação</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('avaliacoes.painel') }}">Painel</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('evaluations.panel') }}">Painel</a></li>
                                 </ul>
                             </li>
-                            @if (Auth::user()->grupo_id === 2 || Auth::user()->grupo_id === 1)
+                            
+                            @if (Auth::user()->group_id === 2 || Auth::user()->group_id === 1)
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                         Configurações
                                     </a>
                                     <ul class="dropdown-menu w-25">
-                                        <li><a class="dropdown-item" href="{{ route('user.painel_usuarios') }}">Usuários</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('user.painel_clientes') }}">Clientes</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('user.painel_questionarios') }}">Questionários</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('users.index') }}">Usuários</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('clients.index') }}">Clientes</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('questionnaires.index') }}">Questionários</a></li>
                                     </ul>
                                 </li>
-                                
                             @endif
                             <li class="nav-item"><a class="nav-link" href="">Procedimentos</a></li>
                         </ul>
@@ -59,12 +63,17 @@
                         </a>
                     </li>
                     <li class="list-inline-item">
-                        <a href="{{ route('avaliacoes.notificacao') }}">
+                        <a href="{{ route('notifications.index') }}" class="notification-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                 fill="var(--secundary-color)" class="bi bi-bell" viewBox="0 0 16 16">
                                 <path
                                     d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6" />
                             </svg>
+                            @if (isset($sumUnread) && $sumUnread > 0)
+                                <span class="notification-bubble" id="notificationBubble">{{ $sumUnread }}</span>
+                            @else
+                                <span></span>
+                            @endif
                         </a>
                     </li>
                     <li class="list-inline-item dropstart">
@@ -83,27 +92,25 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ route('user.user_details') }}">Perfil</a></li>
-                            <li><a class="dropdown-item" href="#">Meus Chamados</a></li>
-                            <li><a class="dropdown-item" href="{{ route('avaliacoes.notificacao') }}">Notificações</a>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('user.painel_user') }}">Painel
-                                    Gestor</a></li>
-                            @if (Auth::user()->role === 'COORDENADOR')
-                            @endif
-                    </li>
-                    <li><a class="dropdown-item" href=""><u>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('users.user') }}">Perfil</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('notifications.index') }}">Notificações</a>
+                            </li>
+                            <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-
                                     <x-dropdown-link :href="route('logout')"
                                         onclick="event.preventDefault();
-                                            this.closest('form').submit();">
+                                            this.closest('form').submit();"
+                                        class="text-white" style="text-decoration: none">
                                         {{ __('Sair') }}
                                     </x-dropdown-link>
                                 </form>
-                            </u></a></li>
-                </ul>
-                </li>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
         </div>
