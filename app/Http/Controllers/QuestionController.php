@@ -15,13 +15,14 @@ class QuestionController extends Controller
         $clients = Client::all();
         $query = Question::query();
 
-         // Verifica se há filtro por cliente aplicado
-        if ($request->filled('client_id')) {
-            $filterClientId = $request->input('client_id');
-            $query->whereRaw("JSON_CONTAINS(client_id, JSON_QUOTE('$filterClientId'))");
-        } else {
-            $filterClientId = null; // Define $filterClientId como nulo se nenhum filtro foi aplicado
+
+        // Verifica se há filtro por cliente aplicado
+        $filterClientId = $request->get('client_id');
+        if ($filterClientId) {
+            // Filtrar os questionários pelo cliente selecionado
+            $query->where('client_id', 'like', "%$filterClientId%");
         }
+
 
         // Busca as perguntas conforme o filtro aplicado
         $questions = $query->get();
@@ -43,16 +44,17 @@ class QuestionController extends Controller
         }
     }
 
-    public function editQuestion(Question $question)
+    public function editQuestion($id)
     {
-        Log::info('Acessando a edição da pergunta: ' . $question->id);
+        Log::info('Acessando a edição da pergunta: ' . $id);
 
         try {
+            $question = Question::findOrFail($id);
             $clients = Client::all();
-            return view('questionnaires.form', compact('question', 'clients'));
+            return view('questionnaires.form', compact('question', 'clients', 'id'));
         } catch (\Exception $e) {
             Log::error('Erro ao carregar a página de edição: ' . $e->getMessage());
-            return redirect()->route('questionnaires.panel')->with(['error' => 'Erro ao carregar a edição.']);
+            return redirect()->route('questionnaires.index')->with(['error' => 'Erro ao carregar a edição.']);
         }
     }
 
@@ -90,7 +92,7 @@ class QuestionController extends Controller
         }
     }
 
-    public function updatePergunta(Request $request, $id)
+    public function updateQuestion(Request $request, $id)
     {
         $question = Question::findOrFail($id);
 
@@ -112,11 +114,11 @@ class QuestionController extends Controller
             $question->save();
 
             // Redireciona para a lista de perguntas com uma mensagem de sucesso.
-            return redirect()->route('user.painel_questionarios')->with('success', 'Pergunta atualizada com sucesso');
+            return redirect()->route('questionnaires.index')->with('success', 'Pergunta atualizada com sucesso');
         } catch (\Exception $e) {
             // Registra o erro no log e retorna para a página de edição com uma mensagem de erro
             Log::error('Erro ao editar pergunta: ' . $e->getMessage());
-            return redirect()->route('user.painel_questionarios')->withErrors(['error' => 'Erro ao editar pergunta.']);
+            return redirect()->route('questionnaires.index')->withErrors(['error' => 'Erro ao editar pergunta.']);
         }
     }
 

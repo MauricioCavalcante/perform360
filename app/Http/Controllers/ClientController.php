@@ -31,7 +31,7 @@ class ClientController extends Controller
         ]);
 
         // Redirecionamento com mensagem de sucesso
-        return redirect()->route('users.panel_clients')->with('success', 'Cliente criado com sucesso.');
+        return redirect()->route('clients.index')->with('success', 'Cliente criado com sucesso.');
     }
     public function update(Request $request, $id)
     {
@@ -49,7 +49,7 @@ class ClientController extends Controller
         ]);
 
         // Redirecionamento com mensagem de sucesso
-        return redirect()->route('users.panel_clients')->with('success', 'Cliente atualizado com sucesso.');
+        return redirect()->route('clients.index')->with('success', 'Cliente atualizado com sucesso.');
     }
 
     public function destroy($id)
@@ -57,7 +57,7 @@ class ClientController extends Controller
         $client = Client::findOrFail($id);
         $client->delete();
 
-        return redirect()->route('users.panel_clients')->with('success', 'Cliente deletado com sucesso.');
+        return redirect()->route('clients.index')->with('success', 'Cliente deletado com sucesso.');
     }
 }
 

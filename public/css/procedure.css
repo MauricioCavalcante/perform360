@@ -1,0 +1,12 @@
+details{
+    transition: 0.6s linear;
+    
+    summary{
+        font-size: x-large;
+    }
+}
+
+
+li{
+    padding: 8px;
+}

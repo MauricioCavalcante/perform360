@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <main class="container">
+    <main class="container-custom">
         <h3 class="m-4">Avaliação - {{ $evaluation->id }}</h3>
         @if (session('success'))
             <div class="d-flex justify-content-center align-middle alert alert-success text-center">
@@ -68,7 +68,6 @@
                                     <button type="submit" class="btn btn-danger">Excluir</button>
                                 </form>
                             @endif
-
                         @endauth
                     </div>
                 </div>
@@ -128,7 +127,7 @@
 
                         <div>
                             <label class="form-label" for="user_id"><strong>Atendente</strong></label>
-                            <select id="user_id" name="user_id" class="mt-1 block w-full form-control" required>
+                            <select id="user_id" name="user_id" class="mt-1 block w-full form-control">
                                 @foreach ($user as $user)
                                     <option value="{{ $user->id }}"
                                         {{ $user->id == old('user_id', $evaluation->user_id) ? 'selected' : '' }}>
@@ -143,7 +142,7 @@
                             <label class="form-label mt-2" for="protocol"><strong>Protocolo de
                                     Atendimento</strong></label>
                             <x-text-input id="protocol" name="protocol" type="text" class="form-control"
-                                :value="old('protocol', $evaluation->protocol)" required autofocus autocomplete="protocol" />
+                                :value="old('protocol', $evaluation->protocol)" autofocus autocomplete="protocol" />
                             <x-input-error :messages="$errors->get('protocol')" />
                         </div>
 

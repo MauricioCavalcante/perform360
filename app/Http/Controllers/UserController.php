@@ -7,9 +7,13 @@ use App\Models\Client;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Models\Group;
+
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -98,6 +102,23 @@ class UserController extends Controller
 
         return redirect()->route('users.panel_users_details', ['id' => $user->id])
             ->with('status', 'Dados atualizados com sucesso.');
+    }
+
+    public function procedure(){
+
+        return view('procedures.service_itinerary');
+    }
+
+    public function destroy($id){
+        
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return redirect()->route('users.panel_users')->with('success', 'Usuário excluído com sucesso.');
+        } catch (\Exception $e) {
+            Log::error('Erro ao excluir pergunta: ' . $e->getMessage());
+            return redirect()->route('users.panel_users')->withErrors(['error' => 'Erro ao excluir usuário.']);
+        }
     }
 
 }

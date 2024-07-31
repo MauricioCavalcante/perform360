@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('warnings', function (Blueprint $table) {
             $table->id();
-            $table->string('notification');
-            $table->boolean('reading')->default(0);
-            $table->foreignId('evaluation_id')->nullable()->constrained('evaluations')->onDelete('cascade');
+            $table->string('title');
+            $table->text('body')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('warnings');
     }
 };

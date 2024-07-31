@@ -50,7 +50,7 @@ class Evaluation extends Model
      */
     public function notifications()
     {
-        return $this->hasMany(Notification::class, 'evaluation_id');
+        return $this->hasMany(Notification::class, 'evaluation_id')->onDelete('cascade');
     }
 
         /**

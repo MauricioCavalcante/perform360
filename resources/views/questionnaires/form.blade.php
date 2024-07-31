@@ -17,8 +17,8 @@
             <p>{{ session('success') }}</p>
         </div>
     @endif
-    <main class="new-question">
-        <div class="container-custom p-5 pt-3">
+    <main class="container-custom container">
+        <div class="p-5 pt-3">
             <h3>{{ isset($question) ? 'Editar Pergunta' : 'Nova Pergunta' }}</h3>
             <form class="form-group"
                 action="{{ isset($question) ? route('questionnaires.update', $question->id) : route('questionnaires.store') }}"

@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <main class="container">
+    <main class="container-custom">
         <h3 class="m-5">Notificações de Avaliações</h3>
 
         @if ($notifications->isEmpty())

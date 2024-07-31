@@ -109,7 +109,15 @@
                 </div>
                 <div class="mt-2">{{ $user->group->name }}</div>
                 <div class="mt-2">{{ $user->phone }}</div>
-                <button id="editButton" class="btn btn-primary mt-3">Editar</button>
+                <div class="d-flex gap-1 mt-3">
+                    <button id="editButton" class="btn btn-primary">Editar</button>
+                    <form action="{{ route('users.delete', $user->id) }}" method="post"
+                    onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger">Excluir</button>
+                    </form>
+                </div>
             </div>
         </div>
         <div id="confiUser" class="row" style="display: none;">

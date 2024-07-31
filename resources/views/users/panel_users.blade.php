@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <main class="container panel_user">
+    <main class="container-custom container">
         <h3 class="m-4">Página do Gestor</h3>
 
         @if (session('delete'))
@@ -22,7 +22,7 @@
             </div>
         @endif
 
-        <section class="container pagina-usuarios">
+        <section class="container container-custom">
 
             <div id="showUsuarios">
                 <div class="d-flex justify-content-end container-fluid m-2">
@@ -32,7 +32,6 @@
                     <table class="table table-striped table-bordered table-sm ">
                         <thead class="">
                             <tr class='text-center text-nowrap table-dark'>
-                                <th>Classificação</th>
                                 <th>Nome</th>
                                 <th>Email</th>
                                 <th>Cliente</th>
@@ -44,9 +43,6 @@
                         <tbody>
                             @foreach ($users as $user)
                                 <tr class="text-center text-nowrap align-middle ">
-                                    <td>
-                                        {{-- {{ $rank++ }}º --}}
-                                    </td>
                                     <td><a
                                             href="{{ route('users.panel_users_details', ['id' => $user->id]) }}">{{ $user->name }}</a>
                                     </td>

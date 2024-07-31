@@ -7,13 +7,13 @@
 @endsection
 
 @section('content')
-
-    <main class="panel_evaluation container">
+ 
+    <main class="container-custom container">
         <div class="d-flex">
             <div>
                 <h3 class="m-4">Avaliações registradas</h3>
             </div>
-            <div class="mt-3 p-2 ms-auto me-5 alert alert-primary">
+            <div class="mt-3 p-2 ms-auto me-5 alert alert-secondary">
                 <h6 class="mt-2">Media avaliações: {{ $avgScore }}</h6>
             </div>
         </div>
@@ -52,9 +52,9 @@
                             <td>{{ $evaluation->id }}</td>
                             <td>
                                 @isset($evaluation->user_id)
-                                    @if (auth()->user()->grupo_id == 2)
+                                    @if (Auth::user()->group_id == 2 || Auth::user()->group_id == 1)
                                         <a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                                            href="{{ route('users.painel_users', ['id' => $evaluation->user->id]) }}">{{ $evaluation->user->name ?? 'Atendente não encontrado' }}</a>
+                                            href="{{ route('users.panel_users_details', ['id' => $evaluation->user->id]) }}">{{ $evaluation->user->name ?? 'Atendente não encontrado' }}</a>
                                     @else
                                         {{ $evaluation->user->name ?? 'Atendente não encontrado' }}
                                     @endif

@@ -10,6 +10,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\WarningController;
 
 
 //Middleware
@@ -23,13 +24,13 @@ Route::post('admin/register', [RegisteredUserController::class, 'storeAdmin'])->
 
 
 Route::middleware('auth')->group(function () {
-    
+
     Route::get('/', function () {
         return view('index');
     })->middleware(['auth', 'verified'])->name('index');
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    
+
     Route::get('/profile/update-password', [PasswordController::class, 'index'])->name('profile.update-password');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -37,8 +38,8 @@ Route::middleware('auth')->group(function () {
 
     // Rotas de Avaliações
     Route::prefix('evaluations')->group(function () {
-        Route::get('/panel', [EvaluationController::class, 'index'])->name('evaluations.panel');
-        Route::post('/', [EvaluationController::class, 'store'])->name('evaluations.store');
+        Route::get('/', [EvaluationController::class, 'index'])->name('evaluations.index');
+        Route::post('/create', [EvaluationController::class, 'store'])->name('evaluations.store');
         Route::get('/new_evaluation', [EvaluationController::class, 'create'])->name('evaluations.create');
         Route::put('/{id}', [EvaluationController::class, 'update'])->name('evaluations.update');
         Route::delete('/{id}', [EvaluationController::class, 'destroy'])->name('evaluations.destroy');
@@ -49,35 +50,38 @@ Route::middleware('auth')->group(function () {
         Route::get('/avaliar/{id}', [EvaluationController::class, 'avaliar'])->name('evaluations.avaliar');
     });
 
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    
     Route::prefix('notifications')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('notifications.index');
         Route::post('/notification/reading/{id}', [NotificationController::class, 'markReading'])->name('notification.reading');
     });
-    
+
     Route::prefix('users')->group(function () {
         Route::get('/user', [UserController::class, 'read'])->name('users.user');
-
     });
-    
 
-
+    Route::prefix('procedures')->group(function(){
+        Route::get('/', [UserController::class, 'procedure'])->name('procedures.service_itinerary');
     });
-    
-    // Rotas acessíveis apenas para coordenadores
+
+    Route::prefix('warnings')->group(function(){
+        Route::get('/', [WarningController::class, 'index'])->name('warnings.index');
+        Route::get('/panel', [WarningController::class, 'panel'])->name('warnings.panel');
+    });
+});
+
+// Rotas acessíveis apenas para coordenadores
 Route::middleware(['auth', AccessLevel::class])->group(function () {
 
-
+    // Registar usuário como coordenador
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
-    
-    Route::prefix('evaluations')->group(function (){
-        Route::get('/questionnaire/{id}', [EvaluationController::class, 'question'])->name('evaluations.questionnaire');
-        Route::post('/questionnaire/{id}', [EvaluationController::class, 'questionSave'])->name('evaluations.save');
 
+    // Rotas de Avaliações
+    Route::prefix('evaluations')->group(function () {
+        Route::get('/questionnaire/{id}', [EvaluationController::class, 'questionnaire'])->name('evaluations.questionnaire');
+        Route::post('/questionnaire/{id}', [EvaluationController::class, 'questionnaireSave'])->name('evaluations.save');
     });
-    // Rotas de Usuário
+    // Rotas de Usuários
     Route::prefix('users')->group(function () {
         Route::get('/users/panel', [UserController::class, 'index'])->name('users.panel_users');
         Route::get('/', [UserController::class, 'index'])->name('users.index');
@@ -87,33 +91,32 @@ Route::middleware(['auth', AccessLevel::class])->group(function () {
         Route::get('/panel_user_details/{id}', [UserController::class, 'details'])->name('users.panel_users_details');
         Route::put('/panel_user_details/updateUser/{id}', [UserController::class, 'updateUser'])->name('users.updateUser');
         Route::put('/panel_user_details/updateName/{id}', [UserController::class, 'updateName'])->name('users.updateName');
+        Route::delete('/panel_user_details/{id}', [UserController::class, 'destroy'])->name('users.delete');
     });
-    // Rotas de Questionário 
-    // Route::prefix('questionnaires')->group(function () {
-    //     Route::get('/panel', [QuestionnaireController::class, 'index'])->name('questionnaires.index');
-    //     Route::get('/form', [QuestionnaireController::class, 'formQuestion'])->name('questionnaires.form');
-    //     Route::post('/form', [QuestionnaireController::class, 'store'])->name('questionnaires.store');
-    //     Route::get('/{questionnaire}/edit', [QuestionnaireController::class, 'editarPergunta'])->name('questionnaires.edit');
-    //     Route::put('/{questionnaire}', [QuestionnaireController::class, 'updatePergunta'])->name('questionnaires.update');
-    //     Route::delete('/{questionnaire}', [QuestionnaireController::class, 'deletePergunta'])->name('questionnaires.delete');
-    
-    // });
-    
+
+    // Rotas de Questionarios
     Route::prefix('questionnaires')->group(function () {
-        Route::get('/panel', [QuestionController::class, 'index'])->name('questionnaires.index');
+        Route::get('/', [QuestionController::class, 'index'])->name('questionnaires.index');
         Route::get('/form', [QuestionController::class, 'form'])->name('questionnaires.form');
         Route::post('/form', [QuestionController::class, 'store'])->name('questionnaires.store');
-        Route::get('/form/{id}', [QuestionController::class, 'editQuestion'])->name('questionnaires.edit');
-        Route::put('/form/{id}', [QuestionController::class, 'updatePergunta'])->name('questionnaires.update');
+        Route::get('/form/{id}/edit', [QuestionController::class, 'editQuestion'])->name('questionnaires.edit');
+        Route::put('/form/{id}', [QuestionController::class, 'updateQuestion'])->name('questionnaires.update');
         Route::delete('/{id}', [QuestionController::class, 'destroy'])->name('questionnaires.delete');
     });
 
     // Rotas de Clientes
     Route::prefix('clients')->group(function () {
         Route::get('/', [ClientController::class, 'index'])->name('clients.index');
-        Route::post('/', [ClientController::class, 'store'])->name('clients.store'); 
+        Route::post('/', [ClientController::class, 'store'])->name('clients.store');
         Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
         Route::put('/{id}', [ClientController::class, 'update'])->name('clients.update');
+    });
+
+    Route::prefix('warnings')->group(function(){
+        Route::get('/create', [WarningController::class, 'create'])->name('warnings.create');
+        Route::post('/store', [WarningController::class, 'store'])->name('warnings.store');
+        Route::delete('/{id}', [WarningController::class, 'destroy'])->name('warnings.destroy');
+
     });
 });
 

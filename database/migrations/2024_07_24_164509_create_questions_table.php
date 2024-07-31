@@ -15,7 +15,7 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string('question', 65535);
+            $table->text('question');
             $table->decimal('score', 8, 2);
             $table->json('client_id');
             $table->integer('version')->default('1');

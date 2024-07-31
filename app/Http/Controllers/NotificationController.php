@@ -19,8 +19,7 @@ class NotificationController extends Controller
     {
         $notification = Notification::find($id);
         if ($notification) {
-            $notification->reading = 1;
-            $notification->save();
+            $notification->update(['reading' => '1']);
         }
 
         return redirect()->back();

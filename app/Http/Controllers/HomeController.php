@@ -5,65 +5,107 @@ namespace App\Http\Controllers;
 use App\Models\Evaluation;
 use App\Models\Client;
 use App\Models\User;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-
     public function index()
     {
-        $client = Client::all();
-        $namesClients = $client->pluck('name')->implode(', ');
-        $evaluation = Evaluation::all();
+        // Obtenha todos os clientes e mapeie por ID para acesso rápido
+        $clients = Client::all()->keyBy('id');
+        
+        // Obtenha os dados dos usuários (classificação)
+        $users = User::where('group_id', 4)->get();
+
+        $evaluations = Evaluation::all();
+
+        // Contagem de avaliações por usuário (classificação)
+        $countEvaluationUser = Evaluation::select('user_id', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('user_id')
+            ->groupBy('user_id')
+            ->get();
+        
+        // Média de pontuação por usuário (classificação)
+        $averageScores = Evaluation::select('user_id', DB::raw('AVG(score) as average_score'))
+            ->groupBy('user_id')
+            ->get();
+        
+        // Contagem de avaliações com pontuação (Card)
         $countEvaluation = Evaluation::whereNotNull('score')->count();
-
-        $score = Evaluation::average('score'); 
-
+        // Média geral das avaliações (Card)
+        $score = Evaluation::average('score');
+        // Total de avaliações (Card)
         $totalEvaluation = Evaluation::count();
 
-        return view("index" , compact("client","evaluation", "score", "totalEvaluation", "countEvaluation", "namesClients"));
-    }
-    public function getBarChartData(Request $request)
-    {
-        // Obtemos a média mensal das avaliações
-        $mediaMensalNotas = Evaluation::selectRaw('YEAR(created_at) as ano, MONTH(created_at) as mes, AVG(avaliacao) as media_avaliacao')
-            ->groupBy('ano', 'mes')
-            ->orderBy('ano', 'asc')
-            ->orderBy('mes', 'asc')
+        // Contagem de avaliações por cliente (gráfico)
+        $countEvaluationClient = Evaluation::select('client_id', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('client_id')
+            ->groupBy('client_id')
             ->get();
 
-        // Criar arrays para os labels e os dados da média mensal das avaliações
-        $labels = $mediaMensalNotas->map(function ($item) {
-            return $item->ano . '-' . str_pad($item->mes, 2, '0', STR_PAD_LEFT); // Formato: YYYY-MM
-        })->toArray();
-        $mediaNotas = $mediaMensalNotas->map(function ($item) {
-            return $item->media_avaliacao;
-        })->toArray();
+        // Preparar dados para o gráfico de clientes
+        $points = $countEvaluationClient->map(function ($item) use ($clients) {
+            $clientName = $clients->has($item->client_id) ? $clients[$item->client_id]->name : 'Unknown';
+            return [
+                'name' => $clientName,
+                'y' => $item->total
+            ];
+        });
 
-        // Obtemos o total mensal de chamados por cliente
-        $totalMensalChamados = Evaluation::selectRaw('YEAR(created_at) as ano, MONTH(created_at) as mes, id_client, COUNT(*) as total_chamados')
-            ->groupBy('ano', 'mes', 'id_client')
-            ->orderBy('ano', 'asc')
-            ->orderBy('mes', 'asc')
+        // Calcular a média mensal das pontuações
+        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
+            ->whereNotNull('score')
+            ->groupBy('month')
+            ->orderBy('month')
             ->get();
 
-        // Criar arrays para os labels e os dados do total mensal de chamados
-        $totalChamadosLabels = $totalMensalChamados->map(function ($item) {
-            $cliente = Client::find($item->id_client);
-            $clienteNome = $cliente ? $cliente->name : 'Cliente sem nome';
-            return $item->ano . '-' . str_pad($item->mes, 2, '0', STR_PAD_LEFT) . ' - ' . $clienteNome; // Formato: YYYY-MM - Nome do Cliente
-        })->toArray();
-        $totalChamadosData = $totalMensalChamados->map(function ($item) {
-            return $item->total_chamados;
-        })->toArray();
+        // Preparar dados para o gráfico de médias gerais
+        $generalAverageData = $monthlyAverages->map(function ($item) {
+            return [
+                'name' => $item->month,
+                'y' => $item->average_score
+            ];
+        });
 
-        // Passamos os dados para a view
+        // Calcular a média mensal das pontuações por cliente
+        $clientMonthlyAverages = Evaluation::select(
+            'client_id',
+            DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+            DB::raw('AVG(score) as average_score')
+        )
+        ->whereNotNull('score')
+        ->groupBy('client_id', 'month')
+        ->orderBy('client_id')
+        ->orderBy('month')
+        ->get();
+
+        // Agrupando os dados por cliente
+        $clientAverageData = $clientMonthlyAverages->groupBy('client_id')->map(function ($items, $clientId) use ($clients) {
+            $clientName = $clients->has($clientId) ? $clients[$clientId]->name : "Client $clientId";
+            return [
+                'name' => $clientName,
+                'data' => $items->map(function ($item) {
+                    return [
+                        'name' => $item->month,
+                        'y' => $item->average_score
+                    ];
+                })->values()->toArray()
+            ];
+        });
+
+        // Passar os dados para a view
         return view('index', [
-            'mediaNotas' => $mediaNotas,
-            'labels' => $labels,
-            'totalChamadosLabels' => $totalChamadosLabels,
-            'totalChamadosData' => $totalChamadosData,
+            'users' => $users,
+            'clients' => $clients,
+            'evaluations' => $evaluations,
+            'score' => $score,
+            'totalEvaluation' => $totalEvaluation,
+            'countEvaluation' => $countEvaluation,
+            'countEvaluationUser' => $countEvaluationUser,
+            'averageScores' => $averageScores,
+            'data' => $points, // Dados para o gráfico de clientes
+            'generalAverageData' => $generalAverageData->toJson(), // Dados para o gráfico de médias gerais
+            'clientAverageData' => $clientAverageData->values()->toJson() // Dados para o gráfico de médias por cliente
         ]);
     }
 }

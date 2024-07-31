@@ -1,9 +1,3 @@
-
-
-function reload() {
-    window.location.reload();
-}
-
 // Script Avaliação (details_evaluation.blade.php) --------------------------------------------------------
 function exibirFormEdit() {
     let form = document.getElementById('formEdit');
@@ -31,40 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Fim Script Avaliação --------------------------------------------------------
 
-// Script Novo e Editar Cliente (painel_user.blade.php) --------------------------------------------------------
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('nameConfigContainer').style.display = 'none';
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const editButtons = document.querySelectorAll('button[id^="showFormEditarCliente"]');
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const clienteId = this.getAttribute('data-id');
-            fetch(`/clientes/${clienteId}`)
-                .then(response => response.json())
-                .then(cliente => {
-                    const formEditarCliente = document.getElementById('formEditarCliente');
-                    formEditarCliente.style.display = 'block';
-                    formEditarCliente.querySelector('form').action = `/clientes/${cliente.id}`;
-                    document.getElementById('name').value = cliente.name;
-                    document.getElementById('projeto').value = cliente.projeto;
-                })
-                .catch(error => console.error('Erro:', error));
-        });
-    });
-});
-
-function toggleFormCliente() {
-    let formNovoCliente = document.getElementById('formNovoCliente');
-
-    if (formNovoCliente.style.display === 'none' || formNovoCliente.style.display === '') {
-        formNovoCliente.style.display = 'block';
-    } else {
-        formNovoCliente.style.display = 'none';
-    }
-}
 
 
 function toggleNameConfigEdit() {
@@ -121,3 +81,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function updatePassword(){
+    const form = document.getElementById('updatePasswordForm');
+
+    if(form.style.display === 'none'){
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}

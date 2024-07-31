@@ -51,11 +51,11 @@ class EvaluationController extends Controller
             TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
 
             // Return a response to the user
-            return redirect()->route('evaluations.panel')->with("warning", "O Áudio está sendo transcrito, por favor aguarde!");
+            return redirect()->route('evaluations.index')->with("warning", "O Áudio está sendo transcrito, por favor aguarde!");
         } catch (\Exception $e) {
             // Log the error
             Log::error("Error processing the audio file: " . $e->getMessage());
-            return redirect()->route('evaluations.panel')->with("error", "Houve um problema ao transcrever o áudio.");
+            return redirect()->route('evaluations.index')->with("error", "Houve um problema ao transcrever o áudio.");
         }
     }
 
@@ -90,17 +90,31 @@ class EvaluationController extends Controller
         }
     }
 
-    public function question($id)
+    public function questionnaire($id)
     {
 
         $evaluation = Evaluation::findOrFail($id);
         $questions = Question::all();
         $sumScore = Question::sum('score');
 
-        return view("evaluations.questionnaire", compact("id", "evaluation", "questions", "sumScore"));
+        $query = Question::query();
+
+
+        // Verifica se há filtro por cliente aplicado
+        $filterClientId = $evaluation->client_id;
+        if ($filterClientId) {
+            // Filtrar os questionários pelo cliente selecionado
+            $query->where('client_id', 'like', "%$filterClientId%");
+        }
+
+
+        // Busca as perguntas conforme o filtro aplicado
+        $questions = $query->get();
+
+        return view("evaluations.questionnaire", compact("id", "evaluation", "questions", "sumScore", "questions", 'filterClientId'));
     }
 
-    public function questionSave(Request $request, $id)
+    public function questionnaireSave(Request $request, $id)
     {
         // Validação dos dados recebidos do formulário
         $request->validate([
@@ -125,10 +139,12 @@ class EvaluationController extends Controller
         try {
             $evaluation = Evaluation::findOrFail($id);
             $evaluation->delete();
-            return redirect()->route('evaluations.panel')->with('success', 'Avaliação excluída com sucesso.');
+
+
+            return redirect()->route('evaluations.index')->with('success', 'Avaliação excluída com sucesso.');
         } catch (\Exception $e) {
             Log::error("Erro ao excluir a avaliação: " . $e->getMessage());
-            return redirect()->route('evaluations.panel')->with('error', 'Houve um problema ao excluir a avaliação.');
+            return redirect()->route('evaluations.index')->with('error', 'Houve um problema ao excluir a avaliação.');
         }
     }
 

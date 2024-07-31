@@ -12,7 +12,7 @@
     @endphp
 
     <main>
-        <section class="questionnaires mb-4 p-4">
+        <section class="container-custom container mb-4 p-4">
             <div class="container">
                 <h1 class="p-3">Questionários</h1>
                 <div class="d-flex align-items-center">
@@ -34,7 +34,7 @@
                     </form>
                     
                     <div class="ms-auto">
-                        <strong>Soma das Notas: {{ $totalScore }} /100</strong> <!-- Corrigido para 'totalScore' -->
+                        <strong>Soma das Notas: {{ $totalScore }} /100</strong>
                         <a href="{{ route('questionnaires.form') }}" class="btn btn-dark m-3">Adicionar Pergunta</a>
                     </div>
                 </div>

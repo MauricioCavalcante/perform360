@@ -6,56 +6,49 @@
     margin: auto;
 }
 
-.panel_evaluation{
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
+    th, td{
+        padding: 10px;
+        vertical-align: middle;
+    }
 
-        th, td{
-            padding: 10px;
-            vertical-align: middle;
-        }
+    th{
+        background-color: var(--primary-color);
+        color: #fff;
+    }
+}
+.pagination {
+    margin: 20px 0; /* Espaçamento ao redor da paginação */
+    justify-content: center; /* Centraliza os links horizontalmente */
+    width: 400px;
+}
 
-        th{
-            background-color: var(--primary-color);
-            color: #fff;
-        }
-    }
-    .pagination {
-        margin: 20px 0; /* Espaçamento ao redor da paginação */
-        justify-content: center; /* Centraliza os links horizontalmente */
-        width: 400px;
-    }
-    
-    .pagination .page-item {
-        display: inline-block; /* Exibe os itens de página como inline */
-        margin-right: 5px; /* Espaçamento entre os itens */
-    }
-    
-    .pagination .page-link {
-        color: var(--primary-color); /* Cor do texto dos links */
-        border: 1px solid var(--primary-color); /* Borda dos links */
-        padding: 1px 12px; /* Espaçamento interno dos links */
-        transition: background-color 0.3s; /* Transição suave de cor de fundo */
-    }
-    
-    .pagination .page-link:hover {
-        background-color: var(--primary-color); /* Cor de fundo ao passar o mouse */
-        color: #fff; /* Cor do texto ao passar o mouse */
-        border-color: var(--primary-color); /* Cor da borda ao passar o mouse */
-    }
-    
-    .pagination .page-item.active .page-link {
-        background-color: var(--primary-color); /* Cor de fundo do link da página ativa */
-        color: #fff; /* Cor do texto do link da página ativa */
-        border-color: var(--primary-color); /* Cor da borda do link da página ativa */
-    }
+.pagination .page-item {
+    display: inline-block; /* Exibe os itens de página como inline */
+    margin-right: 5px; /* Espaçamento entre os itens */
+}
+
+.pagination .page-link {
+    color: var(--primary-color); /* Cor do texto dos links */
+    border: 1px solid var(--primary-color); /* Borda dos links */
+    padding: 1px 12px; /* Espaçamento interno dos links */
+    transition: background-color 0.3s; /* Transição suave de cor de fundo */
+}
+
+.pagination .page-link:hover {
+    background-color: var(--primary-color); /* Cor de fundo ao passar o mouse */
+    color: #fff; /* Cor do texto ao passar o mouse */
+    border-color: var(--primary-color); /* Cor da borda ao passar o mouse */
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color); /* Cor de fundo do link da página ativa */
+    color: #fff; /* Cor do texto do link da página ativa */
+    border-color: var(--primary-color); /* Cor da borda do link da página ativa */
 }
 
 .questionnaire, .details_evaluation{

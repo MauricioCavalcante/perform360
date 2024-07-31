@@ -84,5 +84,7 @@ Ativar o ambiente virtual: venv\Scripts\Activate
     
     Instalar: pip install openai-whisper
 
+
+
 Traduzir para portugues
 https://github.com/lucascudo/laravel-pt-BR-localization

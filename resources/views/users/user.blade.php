@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <main class="container details_user">
+    <main class="container-custom">
         <div class="d-flex">
             <h3 class="m-4" id="nome">{{ Auth::user()->name }} </h3>
             {{-- <span class="z-n1 alert alert-success d-flex align-items-center ms-auto me-5">{{ $avgScore }}
@@ -61,7 +61,12 @@
             </table>
         </div>
         <div>
-            <a href="{{ route('profile.update-password') }}" class="btn btn-dark">Alterar senha</a>
+            <button onclick="updatePassword()" class="btn btn-dark">Alterar senha</button>
+        </div>
+        <div id="updatePasswordForm" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg col-6 mt-2 rounded" style="display: none;">
+            <div class="max-w-xl">
+                @include('profile.partials.update-password-form')
+            </div>
         </div>
         <div class="mt-5">
             <h4>Histórico de chamados</h4>
@@ -81,7 +86,7 @@
                         @foreach ($evaluation as $evaluation)
                             @if ($evaluation->id_user == Auth::user()->id)
                                 <tr>
-                                    <td><a
+                                    <td><a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                                             href="/evaluations/details_evaluation/{{ $evaluation->id }}">{{ $evaluation->id }}</a>
                                     </td>
                                     <td>{{ $evaluation->user_id ? $evaluation->user->name : 'Não definido' }}</td>
