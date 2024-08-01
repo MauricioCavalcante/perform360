@@ -42,14 +42,25 @@
                     <!-- Conteúdo do carrossel -->
                     <div class="carousel-inner">
                         @foreach ($warnings as $index => $warning)
-                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                <img src="{{ asset('storage/' . $warning->image) }}" class="d-block"
-                                    alt="Imagem {{ $warning->title }}">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>{{ $warning->title }}</h5>
-                                    <p>{{ $warning->body }}</p>
+                            @if ($warning->image)
+                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                    <img src="{{ asset('storage/' . $warning->image) }}" class="d-block"
+                                        alt="Imagem {{ $warning->title }}">
+                                    <div class="carousel-caption">
+                                        <h5>{{ $warning->title }}</h5>
+                                        <p>{{ $warning->body }}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                    <div class="carousel-without-image">
+                                        <div class="text-center">
+                                            <h1>{{ $warning->title }}</h1>
+                                            <h3>{{ $warning->body }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
 

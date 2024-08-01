@@ -27,7 +27,7 @@
                                 </ul>
                             </li>
                         @else
-                            <li><a class="dropdown-item" href="{{ route('evaluations.index') }}">Painel</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('evaluations.index') }}">Avaliações</a></li>
                         @endif
                         <li class="nav-item"><a class="nav-link"
                                 href="{{ route('procedures.service_itinerary') }}">Procedimentos</a></li>

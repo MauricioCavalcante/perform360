@@ -30,6 +30,39 @@ class WarningController extends Controller
         return view('warnings.new_warning');
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => ['required', 'string'],
+            'body' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2048'], // Adiciona regras de validação de imagem
+        ]);
+    
+        try {
+            $warning = Warning::findOrFail($id);
+    
+            if ($request->hasFile('image')) {
+
+                if ($warning->image) {
+                    Storage::disk('public')->delete($warning->image);
+                }
+
+                $image = $request->file('image');
+                $imagePath = $image->store('images', 'public');
+                $warning->image = $imagePath;
+            }
+    
+            $warning->title = $request->input('title');
+            $warning->body = $request->input('body', $warning->body);
+            $warning->save();
+    
+            return redirect()->route('warnings.index')->with('success', 'Aviso editado com sucesso.');
+        } catch (\Exception $e) {
+            Log::error('Erro ao editar aviso: ' . $e->getMessage());
+            return redirect()->route('warnings.index')->withErrors(['error' => 'Erro ao editar aviso. Por favor, tente novamente mais tarde.']);
+        }
+    }
+    
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -39,13 +72,11 @@ class WarningController extends Controller
         ]);
 
         try {
+            
             $imagePath = null;
 
-            // Verifique se há um arquivo de imagem na solicitação
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-
-                // Armazene o arquivo em um diretório público e obtenha o caminho
                 $imagePath = $image->store('images', 'public');
             }
 
@@ -56,7 +87,7 @@ class WarningController extends Controller
             ]);
 
             if (!$warningData) {
-                Log::error('Erro ao criar aviso.');
+                Log::error('Erro ao editar aviso.');
             }
 
             return redirect()->route('warnings.index')->with('success', 'Aviso adicionado com sucesso.');

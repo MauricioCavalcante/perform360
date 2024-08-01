@@ -66,6 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('warnings')->group(function(){
         Route::get('/', [WarningController::class, 'index'])->name('warnings.index');
         Route::get('/panel', [WarningController::class, 'panel'])->name('warnings.panel');
+        Route::put('/{id}', [WarningController::class, 'update'])->name('warnings.update');
+        Route::delete('/{id}', [WarningController::class, 'delete'])->name('warnings.destroy');
     });
 });
 

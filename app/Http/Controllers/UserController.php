@@ -17,12 +17,22 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::where('group_id', '<>', 1)->get();
         $clients = Client::all();
         $evaluations = Evaluation::all();
+        $avgScores = [];
+        $currentMonthAvgScores = [];
 
+        foreach ($users as $user) {
+            $avgScores[$user->id] = round(Evaluation::where('user_id', $user->id)->avg('score'), 1);
 
-        return view('users.panel_users', compact('users', 'clients', 'evaluations'));
+            $currentMonthAvgScores[$user->id] = round(Evaluation::where('user_id', $user->id)
+                ->whereYear('created_at', date('Y'))
+                ->whereMonth('created_at', date('m'))
+                ->avg('score'), 1);
+        }
+
+        return view('users.panel_users', compact('users', 'clients', 'evaluations', 'avgScores', 'currentMonthAvgScores'));
     }
 
     public function read()
@@ -75,11 +85,11 @@ class UserController extends Controller
         $user = User::find($id);
 
         $request->validate([
-                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id),],
-                'phone' => ['nullable', 'string', 'max:255'],
-                'group_id' => ['required', Rule::exists('groups', 'id')],
-                'client_id' => ['nullable', 'array'],
-                'client_id.*' => ['exists:clients,id'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id),],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'group_id' => ['required', Rule::exists('groups', 'id')],
+            'client_id' => ['nullable', 'array'],
+            'client_id.*' => ['exists:clients,id'],
         ]);
 
 
@@ -101,13 +111,15 @@ class UserController extends Controller
             ->with('status', 'Dados atualizados com sucesso.');
     }
 
-    public function procedure(){
+    public function procedure()
+    {
 
         return view('procedures.service_itinerary');
     }
 
-    public function destroy($id){
-        
+    public function destroy($id)
+    {
+
         try {
             $user = User::findOrFail($id);
             $user->delete();
@@ -117,6 +129,4 @@ class UserController extends Controller
             return redirect()->route('users.panel_users')->withErrors(['error' => 'Erro ao excluir usuário.']);
         }
     }
-
 }
-

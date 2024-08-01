@@ -46,7 +46,8 @@
                         </div>
                     </div>
                     <div id="nameConfigContainer" class="align-items-center" style="display: none;">
-                        <form action="{{ route('users.updateName', ['id' => $user->id]) }}" method="post" class="d-flex gap-2">
+                        <form action="{{ route('users.updateName', ['id' => $user->id]) }}" method="post"
+                            class="d-flex gap-2">
                             @csrf
                             @method('PUT')
                             <h3>
@@ -56,15 +57,15 @@
                             </h3>
                             <div class="d-flex align-items-center gap-1">
                                 <button class="btn btn-primary p-1" type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                        class="bi bi-check-lg" viewBox="0 0 16 17">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                        fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 17">
                                         <path
                                             d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
                                     </svg>
                                 </button>
                                 <button class="btn btn-danger p-1" type="button" onclick="toggleNameConfigCancel()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                        class="bi bi-x-lg" viewBox="0 0 16 17">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                        fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 17">
                                         <path
                                             d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1-.708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
                                     </svg>
@@ -74,7 +75,7 @@
                     </div>
                 </div>
                 <div>
-                    
+
                 </div>
                 @if ($user->group_id == 4)
                     @if ($avgScore)
@@ -96,7 +97,7 @@
                     @endif
                 @endif
             </div>
-            
+
             <div id="infoUser" class="row mb-3">
                 <div class="col-auto">
                     <div class="mt-2"><strong>E-mail:</strong></div>
@@ -111,7 +112,11 @@
                 <div class="col-auto">
                     <div class="mt-2">{{ $user->email }}</div>
                     <div class="mt-2">
-                        {{ implode('/ ', $namesClients[$user->id]) }}
+                        @if (array_key_exists($user->id, $namesClients))
+                            {{ implode('/ ', $namesClients[$user->id]) }}
+                        @else
+                            <p>Sem clientes associado.</p>
+                        @endif
                     </div>
                     <div class="mt-2">{{ $user->group->name }}</div>
                     <div class="mt-2">{{ $user->phone }}</div>

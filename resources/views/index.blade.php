@@ -31,7 +31,7 @@
                         <p class="fs-3">{{ $totalEvaluation }}</p>
                     </div>
                     <div class="cardScore text-center">
-                        <p class="mt-2">Média Geral:</p>
+                        <p class="mt-2">Média Mensal:</p>
                         <p class="fs-3">{{ $monthlyAverageScore }}</p>
                     </div>
                     <div class="cardFristPosition text-center">
@@ -49,7 +49,7 @@
         </section>
         <aside class="col-auto container-custom container">
             <div class="flex-shrink-1 border border-secondary rounded m-auto align">
-                <h4 class="text-center m-auto">Classificação</h4>
+                <h4 class="text-center mt-2 m-auto">Classificação do Mês</h4>
                 <div class="table-responsive m-2 p-2">
                     <table class="table table-striped table-bordered table-sm ">
                         <thead class="">

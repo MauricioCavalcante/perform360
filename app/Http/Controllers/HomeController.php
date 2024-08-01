@@ -12,30 +12,38 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
         $clients = Client::all()->keyBy('id');
 
         $users = User::where('group_id', 4)->get();
+
         $evaluations = Evaluation::all();
+        $totalEvaluation = Evaluation::count();
+        $countEvaluation = Evaluation::whereNotNull('score')->count();
+
         $evaluationCountUser = Evaluation::select('user_id', DB::raw('COUNT(*) as total'))
             ->whereNotNull('user_id')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->groupBy('user_id')
             ->get();
-        
+
         $averageScores = Evaluation::select('user_id', DB::raw('AVG(score) as average_score'))
             ->groupBy('user_id')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->get();
+
         
-        $countEvaluation = Evaluation::whereNotNull('score')->count();
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-        $monthlyAverageScore = Evaluation::whereBetween('updated_at', [$startOfMonth, $endOfMonth])
+        $monthlyAverageScore = Evaluation::whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->whereNotNull('score')
             ->average('score');
-        $totalEvaluation = Evaluation::count();
+        
         $countEvaluationClient = Evaluation::select('client_id', DB::raw('COUNT(*) as total'))
             ->whereNotNull('client_id')
             ->groupBy('client_id')
             ->get();
+
         $points = $countEvaluationClient->map(function ($item) use ($clients) {
             $clientName = $clients->has($item->client_id) ? $clients[$item->client_id]->name : 'Unknown';
             return [
@@ -44,7 +52,7 @@ class HomeController extends Controller
             ];
         });
 
-        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(updated_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
+        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
             ->whereNotNull('score')
             ->groupBy('month')
             ->orderBy('month')
@@ -57,16 +65,12 @@ class HomeController extends Controller
             ];
         });
 
-        $clientMonthlyAverages = Evaluation::select(
-            'client_id',
-            DB::raw('DATE_FORMAT(updated_at, "%Y-%m") as month'),
-            DB::raw('AVG(score) as average_score')
-        )
-        ->whereNotNull('score')
-        ->groupBy('client_id', 'month')
-        ->orderBy('client_id')
-        ->orderBy('month')
-        ->get();
+        $clientMonthlyAverages = Evaluation::select('client_id', DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
+            ->whereNotNull('score')
+            ->groupBy('client_id', 'month')
+            ->orderBy('client_id')
+            ->orderBy('month')
+            ->get();
 
         $clientAverageData = $clientMonthlyAverages->groupBy('client_id')->map(function ($items, $clientId) use ($clients) {
             $clientName = $clients->has($clientId) ? $clients[$clientId]->name : "Client $clientId";
@@ -90,8 +94,8 @@ class HomeController extends Controller
             'countEvaluation' => $countEvaluation,
             'evaluationCountUser' => $evaluationCountUser,
             'averageScores' => $averageScores,
-            'data' => $points, 
-            'generalAverageData' => $generalAverageData->toJson(), 
+            'data' => $points,
+            'generalAverageData' => $generalAverageData->toJson(),
             'clientAverageData' => $clientAverageData->values()->toJson()
         ]);
     }

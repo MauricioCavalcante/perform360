@@ -58,16 +58,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
             Highcharts.chart('history', {
                 title: {
-                    text: 'Average Scores Over Time',
+                    text: 'Série histórica de pontuações',
                     align: 'left'
                 },
                 subtitle: {
-                    text: 'Comparing General Averages and Client-specific Averages',
+                    text: 'Análise comparativa mês a mês',
                     align: 'left'
                 },
                 yAxis: {
                     title: {
-                        text: 'Average Score'
+                        text: 'Pontuação média'
                     }
                 },
                 xAxis: {
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 series: [
                     {
-                        name: 'Average General',
+                        name: 'Média Geral',
                         data: generalAverageData.map(item => item.y)
                     },
                     ...clientAverageData.map(client => ({

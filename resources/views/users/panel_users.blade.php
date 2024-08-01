@@ -36,7 +36,7 @@
                                 <th>Email</th>
                                 <th>Cliente</th>
                                 <th>Ramal</th>
-                                <th>Pontuação</th>
+                                <th>Pontuação Mensal</th>
                                 <th>Grupo</th>
                             </tr>
                         </thead>
@@ -64,7 +64,9 @@
                                     </td>
                                     <td>{{ $user->phone }}</td>
                                     <td>
-                                        {{ $user->score }}
+                                        @if ($user->group_id == 4)
+                                            {{ $currentMonthAvgScores[$user->id] }}
+                                        @endif
                                     </td>
                                     <td>{{ $user->Group->name }}</td>
                                 </tr>
