@@ -50,26 +50,28 @@
             </div>
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
-                    @if ($evaluation->client_id)
-                    <div>
-                        <a href="{{ route('evaluations.questionnaire', $evaluation->id) }}" class="btn btn-success">Avaliar</a>
-                    </div>
-                    @endif
-                    <div>
-                        <button id="edit" class="btn btn-primary">Categorizar</button>
-                    </div>
-                    <div>
-                        @auth
-                            @if (Auth::user()->group_id == 2 || Auth::user()->group_id == 1)
+                    @auth
+                        @if (Auth::user()->group_id == 2 || Auth::user()->group_id == 1)
+                            @if ($evaluation->client_id)
+                                <div>
+                                    <a href="{{ route('evaluations.questionnaire', $evaluation->id) }}"
+                                        class="btn btn-success">Avaliar</a>
+                                </div>
+                            @endif
+                            <div>
+                                <button id="edit" class="btn btn-primary">Categorizar</button>
+                            </div>
+                            <div>
+
                                 <form method="POST" action="{{ route('evaluations.destroy', $evaluation->id) }}"
                                     onsubmit="return confirm('Tem certeza que deseja excluir esta avaliação?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Excluir</button>
                                 </form>
-                            @endif
-                        @endauth
-                    </div>
+                            </div>
+                        @endif
+                    @endauth
                 </div>
                 <div id="evaluation">
                     <table class="table table-striped align-middle text-nowrap">
@@ -103,7 +105,7 @@
                         </tr>
                         <tr>
                             <th>Iniciado por</th>
-                            <td>{{ $evaluation->username}}</td>
+                            <td>{{ $evaluation->username }}</td>
                         </tr>
                         <tr>
                             <th>Data de Registro do Chamado</th>

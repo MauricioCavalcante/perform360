@@ -6,6 +6,7 @@ use App\Models\Evaluation;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -34,6 +35,15 @@ class HomeController extends Controller
         $countEvaluation = Evaluation::whereNotNull('score')->count();
         // Média geral das avaliações (Card)
         $score = Evaluation::average('score');
+
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        $monthlyAverageScore = Evaluation::whereBetween('updated_at', [$startOfMonth, $endOfMonth])
+            ->whereNotNull('score')
+            ->average('score');
+
+
         // Total de avaliações (Card)
         $totalEvaluation = Evaluation::count();
 
@@ -53,7 +63,7 @@ class HomeController extends Controller
         });
 
         // Calcular a média mensal das pontuações
-        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
+        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(updated_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
             ->whereNotNull('score')
             ->groupBy('month')
             ->orderBy('month')
@@ -70,7 +80,7 @@ class HomeController extends Controller
         // Calcular a média mensal das pontuações por cliente
         $clientMonthlyAverages = Evaluation::select(
             'client_id',
-            DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+            DB::raw('DATE_FORMAT(updated_at, "%Y-%m") as month'),
             DB::raw('AVG(score) as average_score')
         )
         ->whereNotNull('score')
@@ -98,7 +108,7 @@ class HomeController extends Controller
             'users' => $users,
             'clients' => $clients,
             'evaluations' => $evaluations,
-            'score' => $score,
+            'monthlyAverageScore' => $monthlyAverageScore,
             'totalEvaluation' => $totalEvaluation,
             'countEvaluation' => $countEvaluation,
             'countEvaluationUser' => $countEvaluationUser,

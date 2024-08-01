@@ -25,6 +25,9 @@
                                 <li><a class="dropdown-item" href="{{ route('evaluations.index') }}">Painel</a></li>
                             </ul>
                         </li>
+                        <li class="nav-item"><a class="nav-link"
+                                href="{{ route('procedures.service_itinerary') }}">Procedimentos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('warnings.index') }}">Avisos</a></li>
                         @if (Auth::user()->group_id === 2 || Auth::user()->group_id === 1)
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button"
@@ -41,11 +44,6 @@
                                 </ul>
                             </li>
                         @endif
-                        <li class="nav-item"><a class="nav-link"
-                                href="{{ route('procedures.service_itinerary') }}">Procedimentos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('warnings.index') }}">Avisos</a></li>
-                        <li class="nav-item">
-                        </li>
                     </ul>
                 </div>
                 <div class="d-flex justify-content-center ms-auto mt-2 ">

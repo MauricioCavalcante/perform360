@@ -4,9 +4,8 @@ details{
     summary{
         font-size: x-large;
     }
+    li{
+        padding: 8px;
+    }
 }
 
-
-li{
-    padding: 8px;
-}

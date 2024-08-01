@@ -16,59 +16,78 @@
         </div>
     @endif
 
-    <main class="container-custom">
-        <div class="d-flex">
-            <h3 class="m-4" id="nome">{{ Auth::user()->name }} </h3>
-            {{-- <span class="z-n1 alert alert-success d-flex align-items-center ms-auto me-5">{{ $avgScore }}
-                Pontos</span> --}}
-        </div>
-
-        <div class="table-responsive col-6">
-            <table class="table table-striped table-sm align-middle text-nowrap">
-                <tr>
-                    <th>Nome de usuário</th>
-                    <td>{{ Auth::user()->username }}</td>
-                </tr>
-                <tr>
-                    <th>E-mail</th>
-                    <td>{{ Auth::user()->email }}</td>
-                </tr>
-                <tr>
-                    <th>Cliente</th>
-                    <td>
-                        @php
-                            $clientIds = json_decode(Auth::user()->client_id);
-                            $namesclients = [];
-
-                            foreach ($clientIds as $clientId) {
-                                $client = Client::find($clientId);
-                                if ($client) {
-                                    $namesclients[] = $client->name;
-                                }
-                            }
-                        @endphp
-                        {{ implode('/ ', $namesclients) }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Perfil</th>
-                    <td>{{ Auth::user()->group_id ? Auth::user()->group->name : 'Nenhum grupo associado.' }}</td>
-                </tr>
-                <tr>
-                    <th>Ramal</th>
-                    <td>{{ Auth::user()->phone }}</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <button onclick="updatePassword()" class="btn btn-dark">Alterar senha</button>
-        </div>
-        <div id="updatePasswordForm" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg col-6 mt-2 rounded" style="display: none;">
-            <div class="max-w-xl">
-                @include('profile.partials.update-password-form')
+    <main class="container-custom container">
+        <section class="container-user m-4 mt-1 pt-4 row p-4">
+            <div class="d-flex justify-content-between ms-5">
+                <h3 class="mt-4 text-center" id="nome">{{ Auth::user()->name }} </h3>
+                @if (Auth::user()->group_id == 4)
+                    @if ($avgScore)
+                        <div class="ms-auto fillScore">
+                            <div id="boxUp"></div>
+                            <div id="score" class="borda" style="--fill: {{ $avgScore / 100 }};"></div>
+                            <div id="boxDown"></div>
+                            <div class="score"><strong>{{ $avgScore }} Pontos</strong></div>
+                            <div id="indicator" style="--fill: {{ $avgScore / 100 }};"></div>
+                        </div>
+                    @else
+                        <div class="ms-auto fillScore">
+                            <div id="boxUp"></div>
+                            <div id="score" class="borda" style="--fill: {{ $avgScore ? $avgScore / 100 : 1 }};"></div>
+                            <div id="boxDown"></div>
+                            <div class="score"><strong>{{ $avgScore ?: 100 }} Pontos</strong></div>
+                            <div id="indicator" style="--fill: {{ $avgScore ? $avgScore / 100 : 1 }};"></div>
+                        </div>
+                    @endif
+                @endif
             </div>
-        </div>
-        <div class="mt-5">
+            <div class="col-auto pb-1">
+                <div class="table-responsive d-flex justify-content-between p-4 mt-2">
+                    <table class="table table-striped table-md align-middle text-nowrap">
+                        <tr>
+                            <th>E-mail</th>
+                            <td>{{ Auth::user()->email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Cliente</th>
+                            <td>
+                                @php
+                                    $clientIds = json_decode(Auth::user()->client_id);
+                                    $namesclients = [];
+
+                                    foreach ($clientIds as $clientId) {
+                                        $client = Client::find($clientId);
+                                        if ($client) {
+                                            $namesclients[] = $client->name;
+                                        }
+                                    }
+                                @endphp
+                                {{ implode('/ ', $namesclients) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Perfil</th>
+                            <td>{{ Auth::user()->group_id ? Auth::user()->group->name : 'Nenhum grupo associado.' }}</td>
+                        </tr>
+                        @if ($user->phone)
+                            <tr>
+                                <th>Ramal</th>
+                                <td>{{ Auth::user()->phone }}</td>
+                            </tr>
+                        @endif
+                    </table>
+                </div>
+                <div>
+                    <button onclick="updatePassword()" class="btn btn-dark ms-5">Alterar senha</button>
+                </div>
+                <div id="updatePasswordForm" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mt-2 rounded"
+                    style="display: none;">
+                    <div class="max-w-xl">
+                        @include('profile.partials.update-password-form')
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="mt-5 container-custom">
             <h4>Histórico de chamados</h4>
             <div class="table-responsive mt-5">
                 <table class="table table-striped table-sm text-center text-nowrap align-middle">

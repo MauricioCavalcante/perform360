@@ -19,12 +19,34 @@ function exibirFormEdit() {
 
 document.getElementById('edit').addEventListener('click', exibirFormEdit);
 
+
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('formEdit').style.display = 'none';
 });
 
 // Fim Script Avaliação --------------------------------------------------------
+function toggleForm() {
+    const infoUser = document.getElementById('infoUser');
+    const configUser = document.getElementById('configUser');
+    
+    if (infoUser.style.display === 'none') {
+        infoUser.style.display = 'block';
+        configUser.style.display = 'none';
+    } else {
+        infoUser.style.display = 'none';
+        configUser.style.display = 'block';
+    }
+}
 
+
+function toggleConfigUserCancel() {
+    let configUser = document.getElementById('configUser');
+    let user = document.getElementById('infoUser');
+
+    configUser.style.display = 'none';
+    user.style.display = 'block';
+}
 
 
 function toggleNameConfigEdit() {
@@ -91,3 +113,4 @@ function updatePassword(){
         form.style.display = 'none';
     }
 }
+

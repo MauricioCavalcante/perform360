@@ -32,7 +32,7 @@
                     </div>
                     <div class="cardScore text-center">
                         <p class="mt-2">Média Geral:</p>
-                        <p class="fs-3">{{ $score }}</p>
+                        <p class="fs-3">{{ $monthlyAverageScore }}</p>
                     </div>
                     <div class="cardFristPosition text-center">
                         <p class="mt-2">Avaliados:</p>
