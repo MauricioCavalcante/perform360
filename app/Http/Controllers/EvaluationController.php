@@ -31,29 +31,25 @@ class EvaluationController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate the audio file
             $request->validate([
                 'audio' => 'required|file|max:102400',
             ]);
 
-            // Process the audio file upload
             $file = $request->file('audio');
             $fileName = 'audio-' . uniqid() . '.' . $file->getClientOriginalExtension();
             $filePath = $file->storeAs('public/upload', $fileName);
 
-            // Create a new Evaluation instance and save the file path
             $evaluation = new Evaluation();
             $evaluation->audio = $filePath;
-            $evaluation->username = Auth::user()->name; // Changed from 'usuario'
+            $evaluation->username = Auth::user()->name;
             $evaluation->save();
 
-            // Dispatch the job to transcribe the audio in the background
             TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
 
-            // Return a response to the user
             return redirect()->route('evaluations.index')->with("warning", "O Áudio está sendo transcrito, por favor aguarde!");
+        
         } catch (\Exception $e) {
-            // Log the error
+
             Log::error("Error processing the audio file: " . $e->getMessage());
             return redirect()->route('evaluations.index')->with("error", "Houve um problema ao transcrever o áudio.");
         }
@@ -70,21 +66,18 @@ class EvaluationController extends Controller
         try {
             $evaluation = Evaluation::findOrFail($id);
 
-            // Verificar se a avaliação foi encontrada
             if (!$evaluation) {
                 return redirect()->back()->with('error', 'Avaliação não encontrada.');
             }
 
-            // Atualizar os campos com os novos valores do formulário
             $evaluation->user_id = $request->input('user_id');
             $evaluation->protocol = $request->input('protocol');
-            $evaluation->client_id = $request->input('client_id'); // Assumindo que o campo no modelo é 'cliente_id'
+            $evaluation->client_id = $request->input('client_id');
             $evaluation->save();
 
-            // Redirecionar de volta para a página da avaliação com uma mensagem de sucesso
             return redirect()->route('evaluations.details_evaluation', $evaluation->id)->with('success', 'Avaliação atualizada!');
         } catch (\Exception $e) {
-            // Registrar o erro, se houver
+
             Log::error("Erro ao atualizar a avaliação: " . $e->getMessage());
             return redirect()->back()->with('error', 'Houve um problema ao atualizar a avaliação.');
         }
@@ -94,55 +87,44 @@ class EvaluationController extends Controller
     {
 
         $evaluation = Evaluation::findOrFail($id);
-        $questions = Question::all();
         $sumScore = Question::sum('score');
-
         $query = Question::query();
 
-
-        // Verifica se há filtro por cliente aplicado
         $filterClientId = $evaluation->client_id;
+
         if ($filterClientId) {
-            // Filtrar os questionários pelo cliente selecionado
             $query->where('client_id', 'like', "%$filterClientId%");
         }
 
-
-        // Busca as perguntas conforme o filtro aplicado
         $questions = $query->get();
 
-        return view("evaluations.questionnaire", compact("id", "evaluation", "questions", "sumScore", "questions", 'filterClientId'));
+        return view("evaluations.questionnaire", compact("id", "evaluation", "questions", "sumScore", "filterClientId"));
     }
-
     public function questionnaireSave(Request $request, $id)
     {
-        // Validação dos dados recebidos do formulário
         $request->validate([
             'totalScore' => ['required', 'numeric'],
             'feedback' => ['nullable', 'string', 'max:255'],
         ]);
 
-        // Atualiza a avaliação com os dados recebidos
         $evaluation = Evaluation::findOrFail($id);
         $evaluation->score = $request->input('totalScore');
         $evaluation->feedback = $request->input('feedback');
         $evaluation->save();
 
-        
         return redirect()->route('evaluations.details_evaluation', ['id' => $id])
             ->with('success', 'Avaliação salva com sucesso!');
     }
-
-
     public function destroy($id)
     {
         try {
+
             $evaluation = Evaluation::findOrFail($id);
             $evaluation->delete();
 
-
             return redirect()->route('evaluations.index')->with('success', 'Avaliação excluída com sucesso.');
         } catch (\Exception $e) {
+            
             Log::error("Erro ao excluir a avaliação: " . $e->getMessage());
             return redirect()->route('evaluations.index')->with('error', 'Houve um problema ao excluir a avaliação.');
         }

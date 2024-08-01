@@ -75,7 +75,6 @@ class TranscribeAudio implements ShouldQueue
                 $notification->save();
                 Log::info("Notification created for evaluation ID: " . $this->evaluationId);
 
-                // Return a signal to the frontend
                 echo '<script>window.onload = function() { document.getElementById("notificationBubble").style.display = "block"; }</script>';
             } catch (\Exception $e) {
                 Log::error("Error creating notification: " . $e->getMessage());

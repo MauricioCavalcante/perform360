@@ -3,11 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (container) {
         try {
-            // Parse os dados JSON do atributo data-chart-data
             var data = JSON.parse(container.getAttribute("data-chart-data"));
             console.log("Dados carregados:", data);
 
-            // Crie o gráfico Highcharts
             Highcharts.chart("container", {
                 chart: {
                     type: "pie"
@@ -51,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (historyElement) {
         try {
-            // Parse os dados JSON do atributo data-chart-data
             var data = historyElement.getAttribute("data-chart-data");
             var [generalAverageDataJson, clientAverageDataJson] = data.split('|');
             var generalAverageData = JSON.parse(generalAverageDataJson);
@@ -59,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             console.log("Dados carregados:", { generalAverageData, clientAverageData });
 
-            // Crie o gráfico Highcharts
             Highcharts.chart('history', {
                 title: {
                     text: 'Average Scores Over Time',
@@ -94,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         label: {
                             connectorAllowed: false
                         }
-                        // Não é necessário definir pointStart para gráficos com dados categóricos
                     }
                 },
                 series: [

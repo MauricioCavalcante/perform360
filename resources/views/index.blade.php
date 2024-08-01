@@ -88,7 +88,7 @@
                                         @endforeach
                                     </td>
                                     <td>
-                                        @foreach ($countEvaluationUser as $evaluation)
+                                        @foreach ($evaluationCountUser as $evaluation)
                                             @if ($evaluation->user_id == $user->id)
                                                 {{ $evaluation->total }}
                                             @endif

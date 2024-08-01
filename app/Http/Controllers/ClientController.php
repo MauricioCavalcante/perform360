@@ -18,37 +18,31 @@ class ClientController extends Controller
     }
     public function store(Request $request)
     {
-        // Validação dos dados do formulário
         $request->validate([
             'name' => 'required|string|max:255',
             'codigo' => 'required|string|max:255',
         ]);
 
-        // Criação de um novo cliente
         Client::create([
             'name' => $request->name,
             'codigo' => $request->codigo,
         ]);
 
-        // Redirecionamento com mensagem de sucesso
         return redirect()->route('clients.index')->with('success', 'Cliente criado com sucesso.');
     }
     public function update(Request $request, $id)
     {
-        // Validação dos dados do formulário
         $request->validate([
             'name' => 'required|string|max:255',
             'codigo' => 'required|string|max:255',
         ]);
 
-        // Encontrar o cliente e atualizar suas informações
         $client = Client::findOrFail($id);
         $client->update([
             'name' => $request->name,
             'codigo' => $request->codigo,
         ]);
 
-        // Redirecionamento com mensagem de sucesso
         return redirect()->route('clients.index')->with('success', 'Cliente atualizado com sucesso.');
     }
 

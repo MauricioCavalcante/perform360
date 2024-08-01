@@ -8,22 +8,22 @@
         right: 350px;
         top: 200px;
         border: 20px solid;
-        border-color: transparent transparent red red; /* Cores da borda */
-        transform: rotate(-45deg); /* Rotaciona o círculo */
-        position: absolute; /* Posiciona o elemento */
-        animation: fillCircle 2s linear forwards; /* Animação do preenchimento */
-        display: flex; /* Utiliza flexbox para centralizar a bolinha */
-        justify-content: center; /* Centraliza horizontalmente */
-        align-items: center; /* Centraliza verticalmente */
+        border-color: transparent transparent red red;
+        transform: rotate(-45deg); 
+        position: absolute; 
+        animation: fillCircle 2s linear forwards;
+        display: flex; 
+        justify-content: center;
+        align-items: center;
     }
     
     #score::after {
         content: "";
-        height: 10px; /* Tamanho da bolinha */
-        width: 10px; /* Tamanho da bolinha */
-        border-radius: 50%; /* Faz a bolinha ser circular */
-        background-color: #000; /* Cor da bolinha */
-        position: absolute; /* Posiciona a bolinha */
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        background-color: #000;
+        position: absolute;
     }
 
     .score {
@@ -56,7 +56,6 @@
         top: 0;
         left: 0;
         width: 50%;
-        /* Metade do indicador será preto */
         height: 100%;
         background-color: black;
     }
@@ -67,7 +66,6 @@
         top: 0;
         right: 0;
         width: 50%;
-        /* Metade do indicador será vermelho */
         height: 100%;
         background-color: transparent;
     }
@@ -82,7 +80,6 @@
 
     to {
         transform: rotate(calc(-60deg + (14deg + var(--fill) * 180deg)));
-        /* 180deg por unidade de fill */
         border-color: black black yellowgreen yellowgreen;
     }
 }

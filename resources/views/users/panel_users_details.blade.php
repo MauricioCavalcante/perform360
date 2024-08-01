@@ -73,6 +73,9 @@
                         </form>
                     </div>
                 </div>
+                <div>
+                    
+                </div>
                 @if ($user->group_id == 4)
                     @if ($avgScore)
                         <div class="ms-auto fillScore">

@@ -7,13 +7,10 @@ use App\Models\Client;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Models\Group;
-
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller

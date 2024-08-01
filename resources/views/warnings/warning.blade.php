@@ -28,12 +28,13 @@
                 <div class="text-center">
                     <h3>AVISOS</h3>
                 </div>
-                <div id="carouselWarning" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="20000">
+                <div id="carouselWarning" class="carousel carousel-dark slide" data-bs-ride="carousel"
+                    data-bs-interval="20000">
                     <!-- Indicadores do carrossel -->
                     <div class="carousel-indicators">
                         @foreach ($warnings as $index => $warning)
-                            <button type="button" data-bs-target="#carouselWarning"
-                                data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}"
+                            <button type="button" data-bs-target="#carouselWarning" data-bs-slide-to="{{ $index }}"
+                                class="{{ $index === 0 ? 'active' : '' }}"
                                 aria-current="{{ $index === 0 ? 'true' : 'false' }}"
                                 aria-label="Slide {{ $index + 1 }}"></button>
                         @endforeach

@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Evaluation;
-use Illuminate\Http\Request;
-use App\Models\Notification; // Importe o modelo Notification
-
+use App\Models\Notification; 
 
 class NotificationController extends Controller
 {
@@ -15,6 +12,7 @@ class NotificationController extends Controller
         $sumUnread = $notifications->where('reading', false)->count();
         return view('notifications.notification', compact('notifications', 'sumUnread',));
     }
+
     public function markReading($id)
     {
         $notification = Notification::find($id);

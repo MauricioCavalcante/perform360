@@ -19,7 +19,6 @@ class AccessLevel
             return $next($request);
         }
 
-        // Redirecionar ou retornar erro caso o usuário não seja um Coordenador
         return redirect('/')->with('error', 'Acesso não autorizado.');
     }
 }

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Warning;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-
-use App\Models\Warning;
 
 class WarningController extends Controller
 {

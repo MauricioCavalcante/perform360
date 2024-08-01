@@ -22,33 +22,33 @@ table {
     }
 }
 .pagination {
-    margin: 20px 0; /* Espaçamento ao redor da paginação */
-    justify-content: center; /* Centraliza os links horizontalmente */
+    margin: 20px 0;
+    justify-content: center;
     width: 400px;
 }
 
 .pagination .page-item {
-    display: inline-block; /* Exibe os itens de página como inline */
-    margin-right: 5px; /* Espaçamento entre os itens */
+    display: inline-block;
+    margin-right: 5px;
 }
 
 .pagination .page-link {
-    color: var(--primary-color); /* Cor do texto dos links */
-    border: 1px solid var(--primary-color); /* Borda dos links */
-    padding: 1px 12px; /* Espaçamento interno dos links */
-    transition: background-color 0.3s; /* Transição suave de cor de fundo */
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 1px 12px; 
+    transition: background-color 0.3s;
 }
 
 .pagination .page-link:hover {
-    background-color: var(--primary-color); /* Cor de fundo ao passar o mouse */
-    color: #fff; /* Cor do texto ao passar o mouse */
-    border-color: var(--primary-color); /* Cor da borda ao passar o mouse */
+    background-color: var(--primary-color); 
+    color: #fff; 
+    border-color: var(--primary-color); 
 }
 
 .pagination .page-item.active .page-link {
-    background-color: var(--primary-color); /* Cor de fundo do link da página ativa */
-    color: #fff; /* Cor do texto do link da página ativa */
-    border-color: var(--primary-color); /* Cor da borda do link da página ativa */
+    background-color: var(--primary-color); 
+    color: #fff; 
+    border-color: var(--primary-color);
 }
 
 .questionnaire, .details_evaluation{

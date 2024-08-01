@@ -15,19 +15,13 @@ class QuestionController extends Controller
         $clients = Client::all();
         $query = Question::query();
 
-
-        // Verifica se há filtro por cliente aplicado
         $filterClientId = $request->get('client_id');
         if ($filterClientId) {
-            // Filtrar os questionários pelo cliente selecionado
+
             $query->where('client_id', 'like', "%$filterClientId%");
         }
 
-
-        // Busca as perguntas conforme o filtro aplicado
         $questions = $query->get();
-
-        // Calcula a soma total das notas das perguntas
         $totalScore = $query->sum('score');
 
         return view('questionnaires.panel', compact('questions', 'clients', 'totalScore', 'filterClientId'));
@@ -60,7 +54,6 @@ class QuestionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        // Valida os dados recebidos da requisição.
         $request->validate([
             'question' => ['required', 'string', 'max:65535'],
             'score' => ['required', 'numeric', 'between:1,100'],
@@ -71,7 +64,7 @@ class QuestionController extends Controller
         $clientIds = $request->input('client_id', []);
 
         try {
-            // Cria uma nova pergunta com os dados validados.
+            
             $questionData = Question::create([
                 'question' => $request->input('question'),
                 'score' => floatval(str_replace(',', '.', $request->input('score'))), // Converte ',' para '.' se necessário
@@ -83,10 +76,9 @@ class QuestionController extends Controller
                 Log::error('Erro ao criar pergunta.');
             }
 
-            // Redireciona para a lista de perguntas com uma mensagem de sucesso.
             return redirect()->route('questionnaires.index')->with('success', 'Pergunta adicionada com sucesso');
         } catch (\Exception $e) {
-            // Registra o erro no log e retorna para a página de criação com uma mensagem de erro
+           
             Log::error('Erro ao criar pergunta: ' . $e->getMessage());
             return redirect()->route('questionnaires.index')->withErrors(['error' => 'Erro ao criar pergunta.']);
         }
@@ -96,7 +88,6 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($id);
 
-        // Valida os dados recebidos da requisição.
         $request->validate([
             'question' => ['required', 'string', 'max:65535'],
             'score' => ['required', 'numeric', 'between:1,100'],
@@ -113,10 +104,9 @@ class QuestionController extends Controller
             $question->version = $question->version + 1;
             $question->save();
 
-            // Redireciona para a lista de perguntas com uma mensagem de sucesso.
             return redirect()->route('questionnaires.index')->with('success', 'Pergunta atualizada com sucesso');
         } catch (\Exception $e) {
-            // Registra o erro no log e retorna para a página de edição com uma mensagem de erro
+        
             Log::error('Erro ao editar pergunta: ' . $e->getMessage());
             return redirect()->route('questionnaires.index')->withErrors(['error' => 'Erro ao editar pergunta.']);
         }
@@ -127,8 +117,10 @@ class QuestionController extends Controller
         try {
             $question = Question::findOrFail($id);
             $question->delete();
+
             return redirect()->route('questionnaires.index')->with('success', 'Pergunta excluída com sucesso.');
         } catch (\Exception $e) {
+            
             Log::error('Erro ao excluir pergunta: ' . $e->getMessage());
             return redirect()->route('questionnaires.index')->withErrors(['error' => 'Erro ao excluir pergunta.']);
         }

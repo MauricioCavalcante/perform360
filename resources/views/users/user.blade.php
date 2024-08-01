@@ -20,25 +20,27 @@
         <section class="container-user m-4 mt-1 pt-4 row p-4">
             <div class="d-flex justify-content-between ms-5">
                 <h3 class="mt-4 text-center" id="nome">{{ Auth::user()->name }} </h3>
-                @if (Auth::user()->group_id == 4)
-                    @if ($avgScore)
-                        <div class="ms-auto fillScore">
-                            <div id="boxUp"></div>
-                            <div id="score" class="borda" style="--fill: {{ $avgScore / 100 }};"></div>
-                            <div id="boxDown"></div>
-                            <div class="score"><strong>{{ $avgScore }} Pontos</strong></div>
-                            <div id="indicator" style="--fill: {{ $avgScore / 100 }};"></div>
-                        </div>
-                    @else
-                        <div class="ms-auto fillScore">
-                            <div id="boxUp"></div>
-                            <div id="score" class="borda" style="--fill: {{ $avgScore ? $avgScore / 100 : 1 }};"></div>
-                            <div id="boxDown"></div>
-                            <div class="score"><strong>{{ $avgScore ?: 100 }} Pontos</strong></div>
-                            <div id="indicator" style="--fill: {{ $avgScore ? $avgScore / 100 : 1 }};"></div>
-                        </div>
+                <div class="d-none d-lg-block">
+                    @if (Auth::user()->group_id == 4)
+                        @if ($avgScore)
+                            <div class="ms-auto fillScore">
+                                <div id="boxUp"></div>
+                                <div id="score" class="borda" style="--fill: {{ $avgScore / 100 }};"></div>
+                                <div id="boxDown"></div>
+                                <div class="score"><strong>{{ $avgScore }} Pontos</strong></div>
+                                <div id="indicator" style="--fill: {{ $avgScore / 100 }};"></div>
+                            </div>
+                        @else
+                            <div class="ms-auto fillScore">
+                                <div id="boxUp"></div>
+                                <div id="score" class="borda" style="--fill: {{ $avgScore ? $avgScore / 100 : 1 }};"></div>
+                                <div id="boxDown"></div>
+                                <div class="score"><strong>{{ $avgScore ?: 100 }} Pontos</strong></div>
+                                <div id="indicator" style="--fill: {{ $avgScore ? $avgScore / 100 : 1 }};"></div>
+                            </div>
+                        @endif
                     @endif
-                @endif
+                </div>
             </div>
             <div class="col-auto pb-1">
                 <div class="table-responsive d-flex justify-content-between p-4 mt-2">
