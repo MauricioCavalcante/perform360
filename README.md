@@ -1,65 +1,105 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PERFORM360 | Controle de Qualidade
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Sobre o Projeto
 
-## About Laravel
+**PERFORM360** é um sistema baseado em Laravel utilizando Blade e Breeze para autenticação, focado na gestão de qualidade de atendimentos através de avaliações de chamadas telefônicas recebidas na central de atendimento. O sistema possui três tipos de perfis ativos além do perfil de administrador, detalhados a seguir. Todo o sistema é baseado no modelo MVC.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Perfis de Usuário
+### Perfil de Qualidade
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Responsabilidades:**
+- Realizar o upload do áudio gerado pela chamada telefônica no sistema.
+- O áudio será transcrito com inteligência artificial da OpenAI-Whisper em segundo plano, utilizando Python.
+- Após a transcrição do áudio, o perfil é responsável pela categorização da avaliação, identificando, através da transcrição, o número do protocolo, o atendente responsável, o cliente solicitante e o usuário que realizou a chamada.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Coordenador
 
-## Learning Laravel
+**Responsabilidades:**
+- Gestão do sistema como um todo.
+- Inclusão, edição e exclusão de perfis de usuários.
+- Inclusão, edição e exclusão de clientes da central de atendimento.
+- Inclusão, edição e exclusão das questões para avaliação, incluindo pontuação e quais questões serão utilizadas para cada cliente.
+- Inclusão, edição e exclusão de informativos no quadro de avisos.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Atendente
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Responsabilidades:**
+- Visualizar os painéis do sistema e a relação de avaliações vinculadas ao mesmo.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Páginas do Sistema
+### Página Inicial
 
-## Laravel Sponsors
+**Descrição:** Inclui o dashboard com as informações gerais do sistema e a classificação dos atendentes baseada na pontuação média mensal. Utiliza Highcharts para exibição de gráficos.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Página de Avaliações
 
-### Premium Partners
+**Descrição:** Contém uma tabela das avaliações organizadas de forma decrescente, do mais recente para o mais antigo.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Página de Nova Avaliação
 
-## Contributing
+**Descrição:** Possui um formulário para inclusão do áudio, iniciando uma nova avaliação com um único input de arquivo.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Página de Procedimentos
 
-## Code of Conduct
+**Descrição:** Contém o roteiro de atendimento que deve ser seguido pelo atendente durante as chamadas telefônicas.
+**Futuro:** Implementação do sistema de treinamentos.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Painel de Avisos
 
-## Security Vulnerabilities
+**Descrição:** Contém um carrossel estilo slide com avisos determinados pelo coordenador para a equipe.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Página de Notificações
+
+**Descrição:** Inicialmente configurada para mostrar a relação de notificações de conclusão das transcrições, gerando um alerta no header da aplicação quando a transcrição feita em segundo plano é finalizada.
+**Futuro:** Inclusão de outras notificações de alerta.
+
+### Página de Perfil
+
+**Descrição:** Exibe as informações do perfil do usuário logado, com opção de alteração de senha e visualização do histórico de atendimento vinculados ao perfil.
+Páginas de Acesso Restrito aos Coordenadores
+
+### Página de Usuários
+
+**Descrição:** Relação de usuários do sistema em todos os perfis que não sejam administradores, com links para visualização detalhada do perfil de cada usuário, edição, exclusão e visualização do histórico de atendimentos realizados pelo atendente.
+**Funcionalidades:** Botão "Novo Usuário" para inclusão de novos usuários do sistema.
+
+### Página de Clientes
+
+**Descrição:** Relação de clientes que o sistema atende, com funcionalidades para inclusão, edição e exclusão de clientes.
+**Funcionalidades:** Botão "Novo Cliente" para inclusão de novos clientes.
+
+### Página de Questões
+
+**Descrição:** Dedicada às questões que serão utilizadas como critérios para avaliar cada chamada telefônica.
+
+### Página de Avisos
+
+**Descrição:** Permite que o coordenador insira novos avisos para a equipe, com ou sem imagem, que serão enviados automaticamente para o Painel de Avisos através do back-end da aplicação.
+
+## Funcionalidades do Sistema
+
+**Transcrição de Áudio:** O áudio das chamadas telefônicas é transcrito utilizando a inteligência artificial da OpenAI-Whisper em segundo plano, com suporte de scripts em Python.
+Gestão de Perfis: Inclusão, edição e exclusão de perfis de usuários, clientes, questões de avaliação e avisos.
+**Avaliação de Chamadas:** Categorização das avaliações com base na transcrição do áudio, identificando o número do protocolo, atendente responsável, cliente solicitante e usuário que realizou a chamada.
+**Painel de Avisos:** Exibição de avisos importantes para a equipe, configurados pelo coordenador.
+**Notificações:** Sistema de notificações para alertar sobre a conclusão das transcrições e outras futuras funcionalidades.
+**Visualização de Dados:** Utilização de Highcharts para exibição de gráficos no dashboard.
+
+## Tecnologias Utilizadas
+[**Laravel:**](https://laravel.com/) Framework PHP para desenvolvimento web, verão 11x.
+**Blade:** Template engine do Laravel.
+**Breeze:** Pacote de autenticação do Laravel.
+[**Bootstrap:**](https://getbootstrap.com/) Framework CSS para design responsivo.
+[**Highcharts:**](https://www.highcharts.com/) Biblioteca para criação de gráficos interativos.
+[**Python:**](https://www.python.org/) Utilizado para scripts de transcrição de áudio, versão compatível - 3.10
+[**OpenAI-Whisper:**](https://pypi.org/project/openai-whisper/) Tecnologia de inteligência artificial para transcrição de áudio.
+
+## Versionamento da Documentação
+Versão 1.0
+Data de Lançamento: 01/08/2024
+Descrição: Versão inicial do sistema com as funcionalidades principais descritas na documentação.
+
+Para obter detalhes completos sobre cada versão, consulte o histórico de commits e a documentação de versão no repositório do projeto.
 
 ## License
 
@@ -83,8 +123,6 @@ Criação de ambiente virtual para execução do script Python
 Ativar o ambiente virtual: venv\Scripts\Activate
     
     Instalar: pip install openai-whisper
-
-
 
 Traduzir para portugues
 https://github.com/lucascudo/laravel-pt-BR-localization
