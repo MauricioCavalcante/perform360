@@ -34,4 +34,9 @@ class Client extends Model
     {
         return $this->hasMany(Evaluation::class, 'client_id');
     }
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 }

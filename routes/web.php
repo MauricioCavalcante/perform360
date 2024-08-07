@@ -44,10 +44,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [EvaluationController::class, 'update'])->name('evaluations.update');
         Route::delete('/{id}', [EvaluationController::class, 'destroy'])->name('evaluations.destroy');
         Route::get('/details_evaluation/{id}', [EvaluationController::class, 'details'])->name('evaluations.details_evaluation');
-        Route::post('/salvar/{id}', [EvaluationController::class, 'salvarAvaliacao'])->name('salvar_avaliacao');
-        Route::get('/details/{id}', [EvaluationController::class, 'detailsAvaliar'])->name('evaluations.details_avaliar');
-        Route::get('/avaliar', [EvaluationController::class, 'evaluation'])->name('evaluations.avaliacao');
-        Route::get('/avaliar/{id}', [EvaluationController::class, 'avaliar'])->name('evaluations.avaliar');
+        Route::get('/details_questionnaire/{id}', [EvaluationController::class, 'showEvaluationDetails'])->name('evaluations.details_questionnaire');
     });
 
     Route::prefix('notifications')->group(function () {
@@ -65,9 +62,6 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('warnings')->group(function(){
         Route::get('/', [WarningController::class, 'index'])->name('warnings.index');
-        Route::get('/panel', [WarningController::class, 'panel'])->name('warnings.panel');
-        Route::put('/{id}', [WarningController::class, 'update'])->name('warnings.update');
-        Route::delete('/{id}', [WarningController::class, 'delete'])->name('warnings.destroy');
     });
 });
 
@@ -117,8 +111,9 @@ Route::middleware(['auth', AccessLevel::class])->group(function () {
     Route::prefix('warnings')->group(function(){
         Route::get('/create', [WarningController::class, 'create'])->name('warnings.create');
         Route::post('/store', [WarningController::class, 'store'])->name('warnings.store');
-        Route::delete('/{id}', [WarningController::class, 'destroy'])->name('warnings.destroy');
-
+        Route::get('/panel', [WarningController::class, 'panel'])->name('warnings.panel');
+        Route::put('/{id}', [WarningController::class, 'update'])->name('warnings.update');
+        Route::delete('/{id}', [WarningController::class, 'delete'])->name('warnings.destroy');
     });
 });
 

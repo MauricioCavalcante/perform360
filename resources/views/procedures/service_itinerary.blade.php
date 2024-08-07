@@ -74,8 +74,8 @@
                             </li>
                         </ol>
                     </li>
+                </ol>
             </div>
-            </ol>
         </details>
         <hr>
         <details class="p-2 mb-2">

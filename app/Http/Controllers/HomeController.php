@@ -34,10 +34,11 @@ class HomeController extends Controller
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->get();
 
-        
+
         $monthlyAverageScore = Evaluation::whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->whereNotNull('score')
             ->average('score');
+        $monthlyAverageScore = number_format($monthlyAverageScore, 2, '.', '');
         
         $countEvaluationClient = Evaluation::select('client_id', DB::raw('COUNT(*) as total'))
             ->whereNotNull('client_id')

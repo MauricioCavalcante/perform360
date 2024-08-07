@@ -37,21 +37,22 @@
                                     </div>
                                     <div class="col">
                                         <label>{{ $question->question }}</label>
+                                        <input type="hidden" name="questions[{{ $question->id }}][question]" value="{{ $question->question }}">
                                     </div>
                                     <div class="col-auto">
                                         <div class="form-check">
                                             <input class="form-check-input score" type="radio"
-                                                name="score[{{ $question->id }}]" id="score_{{ $question->id }}_sim1"
-                                                value="{{ $question->score }}" checked>
+                                                   name="questions[{{ $question->id }}][response]" id="score_{{ $question->id }}_sim1"
+                                                   value="{{ $question->score }}" checked>
                                             <label class="form-check-label" for="score_{{ $question->id }}_sim1">Sim</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input score" type="radio"
-                                                name="score[{{ $question->id }}]" id="score_{{ $question->id }}_nao2"
-                                                value="0">
-                                            <label class="form-check-label"
-                                                for="score_{{ $question->id }}_nao2">Não</label>
+                                                   name="questions[{{ $question->id }}][response]" id="score_{{ $question->id }}_nao2"
+                                                   value="0">
+                                            <label class="form-check-label" for="score_{{ $question->id }}_nao2">Não</label>
                                         </div>
+                                        <input type="hidden" name="questions[{{ $question->id }}][score]" value="{{ $question->score }}">
                                     </div>
                                 </div>
                             </li>
@@ -66,18 +67,20 @@
                                     <label>O número do chamado foi informado?
                                         <span class="text-danger"><strong>Punição gravíssima!</strong></span>
                                     </label>
+                                    <input type="hidden" name="serious_question" value="O número do chamado foi informado?">
                                 </div>
                                 <div class="col-auto">
                                     <div class="form-check">
-                                        <input class="form-check-input score-serious" type="radio" name="score_serious"
-                                            id="score_serious_sim1" value="0" checked>
+                                        <input class="form-check-input score-serious" type="radio" name="serious_response"
+                                               id="score_serious_sim1" value="0" checked>
                                         <label class="form-check-label" for="score_serious_sim1">Sim</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input score-serious" type="radio" name="score_serious"
-                                            id="score_serious_nao2" value="100">
+                                        <input class="form-check-input score-serious" type="radio" name="serious_response"
+                                               id="score_serious_nao2" value="100">
                                         <label class="form-check-label" for="score_serious_nao2">Não</label>
                                     </div>
+                                    <input type="hidden" name="serious_score" value="100">
                                 </div>
                             </div>
                         </li>
@@ -93,6 +96,7 @@
                         <button class="btn btn-dark w-50" type="submit">Salvar</button>
                     </div>
                 </form>
+                
             </div>
         </div>
     </main>

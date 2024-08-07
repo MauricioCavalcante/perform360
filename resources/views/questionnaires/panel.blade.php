@@ -32,12 +32,40 @@
                             <button type="submit" class="btn btn-dark m-3">Filtrar</button>
                         </div>
                     </form>
-                    
                     <div class="ms-auto">
-                        <strong>Soma das Notas: {{ $totalScore }} /100</strong>
+                        {{-- <strong>Soma das Notas: {{ $totalScore }} /100</strong> --}}
                         <a href="{{ route('questionnaires.form') }}" class="btn btn-dark m-3">Adicionar Pergunta</a>
                     </div>
                 </div>
+                {{-- Dentro da sua view panel.blade.php --}}
+                <ul class="list-group m-3 mt-0" style="width: 250px">
+                    @if (isset($scoreByClientJson))
+                        @php
+                            $scoreByClientArray = json_decode($scoreByClientJson, true);
+                        @endphp
+                
+                        @if (count($scoreByClientArray) > 0)
+                            @foreach ($scoreByClientArray as $clientId => $totalScore)
+                                @php
+                                    $client = $clients->firstWhere('id', $clientId);
+                                    $scoreClass = ($totalScore > 100) ? 'text-danger' : (($totalScore < 100) ? 'text-danger' : '');
+                                @endphp
+                                <li class="list-group-item">
+                                    @if ($client)
+                                        {{ $client->name }} - Pontuação: <span class="{{ $scoreClass }}">{{ $totalScore }}</span>
+                                    @else
+                                        Cliente não encontrado para ID: {{ $clientId }}
+                                    @endif
+                                </li>
+                            @endforeach
+                        @else
+                            <li class="list-group-item">Nenhum dado disponível.</li>
+                        @endif
+                    @endif
+                </ul>
+                
+            
+            
 
             </div>
             @if (session('success'))
@@ -53,7 +81,7 @@
             @endif
             <table class="table table-striped align-middle">
                 <thead>
-                    <tr>
+                    <tr class="table-dark">
                         <th>Pergunta</th>
                         <th class="text-center">Nota</th>
                         <th class="text-center">Cliente</th>
@@ -80,7 +108,8 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('questionnaires.edit', ['id' => $question->id]) }}" class="btn btn-sm btn-primary text-decoration-none text-white">Editar</a>
+                                    <a href="{{ route('questionnaires.edit', ['id' => $question->id]) }}"
+                                        class="btn btn-sm btn-primary text-decoration-none text-white">Editar</a>
                                     <form action="{{ route('questionnaires.delete', $question->id) }}" method="POST"
                                         style="display: inline-block;"
                                         onsubmit="return confirm('Tem certeza que deseja excluir esta pergunta?');">

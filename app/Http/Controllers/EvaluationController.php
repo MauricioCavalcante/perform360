@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Jobs\TranscribeAudio;
 use App\Models\Client;
 use App\Models\Question;
+use App\Models\Questionnaire;
 use App\Models\User;
 
 class EvaluationController extends Controller
@@ -47,7 +48,6 @@ class EvaluationController extends Controller
             TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
 
             return redirect()->route('evaluations.index')->with("warning", "O Áudio está sendo transcrito, por favor aguarde!");
-        
         } catch (\Exception $e) {
 
             Log::error("Error processing the audio file: " . $e->getMessage());
@@ -105,16 +105,56 @@ class EvaluationController extends Controller
         $request->validate([
             'totalScore' => ['required', 'numeric'],
             'feedback' => ['nullable', 'string', 'max:255'],
+            'questions' => ['required', 'array'],
+            'questions.*.response' => ['required', 'numeric'],
+            'questions.*.question' => ['required', 'string'],
+            'questions.*.score' => ['required', 'numeric'],
+            'serious_response' => ['required', 'numeric'],
+            'serious_question' => ['required', 'string'],
+            'serious_score' => ['required', 'numeric'],
         ]);
-
+    
         $evaluation = Evaluation::findOrFail($id);
         $evaluation->score = $request->input('totalScore');
         $evaluation->feedback = $request->input('feedback');
         $evaluation->save();
-
+    
+        // Verificar a maior versão existente para este evaluation_id
+        $maxVersion = Questionnaire::where('evaluation_id', $evaluation->id)
+            ->max('version');
+    
+        // Definir a nova versão
+        $newVersion = $maxVersion ? $maxVersion + 1 : 1;
+    
+        // Salvar perguntas, respostas e notas na tabela questionnaires
+        foreach ($request->input('questions') as $questionId => $questionData) {
+            $response = $questionData['response'] == 0 ? 'Não' : 'Sim';
+            Questionnaire::create([
+                'evaluation_id' => $evaluation->id,
+                'question' => $questionData['question'],
+                'response' => $response,
+                'score' => $questionData['score'],
+                'version' => $newVersion, // Adiciona a nova versão
+            ]);
+        }
+    
+        // Salvar a questão séria
+        $seriousResponse = $request->input('serious_response') == 0 ? 'Sim' : 'Não';
+        Questionnaire::create([
+            'evaluation_id' => $evaluation->id,
+            'question' => $request->input('serious_question'),
+            'response' => $seriousResponse,
+            'score' => $request->input('serious_score'),
+            'version' => $newVersion, // Adiciona a nova versão
+        ]);
+    
         return redirect()->route('evaluations.details_evaluation', ['id' => $id])
             ->with('success', 'Avaliação salva com sucesso!');
     }
+    
+    
+
+
     public function destroy($id)
     {
         try {
@@ -124,7 +164,7 @@ class EvaluationController extends Controller
 
             return redirect()->route('evaluations.index')->with('success', 'Avaliação excluída com sucesso.');
         } catch (\Exception $e) {
-            
+
             Log::error("Erro ao excluir a avaliação: " . $e->getMessage());
             return redirect()->route('evaluations.index')->with('error', 'Houve um problema ao excluir a avaliação.');
         }
@@ -137,5 +177,18 @@ class EvaluationController extends Controller
         $client = Client::all();
 
         return view('evaluations.details_evaluation', compact('id', 'user', 'client', 'evaluation'));
+    }
+    public function showEvaluationDetails($id)
+    {
+        $evaluation = Evaluation::findOrFail($id);
+        $questionnaires = Questionnaire::where('evaluation_id', $evaluation->id)
+        ->where('version', function ($query) use ($evaluation) {
+            $query->selectRaw('MAX(version)')
+                ->from('questionnaires')
+                ->where('evaluation_id', $evaluation->id);
+        })
+        ->get();
+
+        return view('evaluations.details_questionnaire', compact('evaluation', 'questionnaires'));
     }
 }

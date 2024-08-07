@@ -103,10 +103,14 @@
                             <th>Protocolo de Atendimento</th>
                             <td>{{ $evaluation->protocol }}</td>
                         </tr>
-                        <tr>
-                            <th>Iniciado por</th>
-                            <td>{{ $evaluation->username }}</td>
-                        </tr>
+                        @auth
+                            @if (Auth::user()->group_id == 2 || Auth::user()->group_id == 1)
+                                <tr>
+                                    <th>Iniciado por</th>
+                                    <td>{{ $evaluation->username }}</td>
+                                </tr>
+                            @endif
+                        @endauth
                         <tr>
                             <th>Data de Registro do Chamado</th>
                             <td>{{ $evaluation->created_at }}</td>
@@ -120,6 +124,9 @@
                             <td>{{ $evaluation->feedback }}</td>
                         </tr>
                     </table>
+                    @if ($evaluation->score || $evaluation->feedback)
+                        <a href="{{ route('evaluations.details_questionnaire', ['id' => $evaluation->id]) }}">Ver resultado</a>
+                    @endif
                 </div>
                 <div id="formEdit" style="display: none;">
                     <form class="form-edit form-group" method="POST"

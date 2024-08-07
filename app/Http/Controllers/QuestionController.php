@@ -14,18 +14,41 @@ class QuestionController extends Controller
     {
         $clients = Client::all();
         $query = Question::query();
-
+    
         $filterClientId = $request->get('client_id');
         if ($filterClientId) {
-
-            $query->where('client_id', 'like', "%$filterClientId%");
+            // Filtrar as questões onde o client_id está presente no JSON
+            $query->whereJsonContains('client_id', $filterClientId);
         }
-
+    
+        // Obter todas as questões que correspondem ao filtro
         $questions = $query->get();
-        $totalScore = $query->sum('score');
-
-        return view('questionnaires.panel', compact('questions', 'clients', 'totalScore', 'filterClientId'));
+    
+        // Inicializar um array para armazenar a soma do score por cliente
+        $scoreByClient = [];
+    
+        foreach ($questions as $question) {
+            // Decodificar o JSON do client_id para um array
+            $clientsArray = json_decode($question->client_id);
+    
+            foreach ($clientsArray as $clientId) {
+                // Verificar se já existe uma entrada para esse cliente no array
+                if (!isset($scoreByClient[$clientId])) {
+                    $scoreByClient[$clientId] = 0; // Inicializar a soma com 0
+                }
+    
+                // Adicionar o score da questão ao cliente correspondente
+                $scoreByClient[$clientId] += $question->score;
+            }
+        }
+    
+        // Converter o array em formato JSON
+        $scoreByClientJson = json_encode($scoreByClient);
+    
+        return view('questionnaires.panel', compact('questions', 'clients', 'scoreByClientJson', 'filterClientId'));
     }
+    
+
 
     public function form(Question $question = null)
     {

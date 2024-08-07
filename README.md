@@ -108,6 +108,16 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Passos para execução do projeto
 
+Iniciar o projeto com Composer
+
+    composer install
+
+Executar o NPM
+
+    npm install
+    npm run dev
+    npm run build
+
 Executar a criação das tabelas e chaves estrangeiras
 
     php artisan migrate

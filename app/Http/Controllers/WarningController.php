@@ -96,7 +96,7 @@ class WarningController extends Controller
             return redirect()->route('warnings.index')->withErrors(['error' => 'Erro ao criar aviso.']);
         }
     }
-    public function destroy($id)
+    public function delete($id)
     {
         try {
             $warnings = Warning::findOrFail($id);
