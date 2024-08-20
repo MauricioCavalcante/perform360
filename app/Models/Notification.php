@@ -13,6 +13,7 @@ class Notification extends Model
         'notification',
         'reading',
         'evaluation_id',
+        'type',
     ];
 
     /**

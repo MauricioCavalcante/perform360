@@ -14,76 +14,70 @@
     @endif
     <main>
         <div class="container-custom container">
-            <div class="d-flex ">
-                <div class="d-flex justify-content-end align-items-center">
+            <div class="container">
+                <div>
                     <h1>Detalhes da Avaliação</h1>
                 </div>
-                <div class="ms-auto me-5 mt-auto">
-                    <h6>Pontuação: <span id="currentValue">100</span></h6>
+                <div class="d-flex">
+                    <div>
+                        <h6>Avaliação ID: {{ $evaluation->id }}</h6>
+                        <h6>Cliente: {{ $evaluation->client->name }}</h6>
+                        <h6>Atendente: {{ $evaluation->user->name }}</h6>
+                    </div>
+                    <div class="ms-auto me-5 mt-auto alert alert-primary pb-0 p-1">
+                        <h6>Pontuação: <span id="currentValue">100</span></h6>
+                    </div>
                 </div>
             </div>
-            <h6>Avaliação ID: {{ $evaluation->id }}</h6>
-            <h6>Cliente: {{ $evaluation->client->name }}</h6>
+
             <div class="m-4 mt-5">
                 <p>Perguntas:</p>
-                <form action="{{ route('evaluations.save', ['id' => $evaluation->id]) }}" method="post">
+                <form action="{{ route('questionnaires.save', ['id' => $evaluation->id]) }}" method="post">
                     @csrf
                     <ol>
                         @foreach ($questions as $question)
                             <li>
-                                <div class="container border-secondary row d-flex align-items-center justify-content-end">
-                                    <div class="col-auto alert alert-light p-1 m-1">
-                                        Nota: {{ $question->score }}
-                                    </div>
+                                <div class="container border-secondary row d-flex align-items-center justify-content-end {{ $question->deduction == 1 ? 'deduction' : '' }}"
+                                    data-question-id="{{ $question->id }}" data-question-score="{{ $question->score }}">
+                                    @if ($question->deduction == 1)
+                                        <div class="col-auto alert alert-danger p-1 m-1">
+                                            Importante!
+                                        </div>
+                                    @else
+                                        <div class="col-auto alert alert-light p-1 m-1">
+                                            Nota: {{ $question->score }}
+                                        </div>
+                                    @endif
                                     <div class="col">
                                         <label>{{ $question->question }}</label>
-                                        <input type="hidden" name="questions[{{ $question->id }}][question]" value="{{ $question->question }}">
+                                        <input type="hidden" name="questions[{{ $question->id }}][question]"
+                                            value="{{ $question->question }}">
                                     </div>
                                     <div class="col-auto">
                                         <div class="form-check">
                                             <input class="form-check-input score" type="radio"
-                                                   name="questions[{{ $question->id }}][response]" id="score_{{ $question->id }}_sim1"
-                                                   value="{{ $question->score }}" checked>
-                                            <label class="form-check-label" for="score_{{ $question->id }}_sim1">Sim</label>
+                                                name="questions[{{ $question->id }}][response]"
+                                                id="score_{{ $question->id }}_sim1" value="{{ $question->score }}"
+                                                checked>
+                                            <label class="form-check-label"
+                                                for="score_{{ $question->id }}_sim1">Sim</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input score" type="radio"
-                                                   name="questions[{{ $question->id }}][response]" id="score_{{ $question->id }}_nao2"
-                                                   value="0">
-                                            <label class="form-check-label" for="score_{{ $question->id }}_nao2">Não</label>
+                                                name="questions[{{ $question->id }}][response]"
+                                                id="score_{{ $question->id }}_nao2" value="0">
+                                            <label class="form-check-label"
+                                                for="score_{{ $question->id }}_nao2">Não</label>
                                         </div>
-                                        <input type="hidden" name="questions[{{ $question->id }}][score]" value="{{ $question->score }}">
+                                        <input type="hidden" name="questions[{{ $question->id }}][score]"
+                                            value="{{ $question->score }}">
+                                        <input type="hidden" name="questions[{{ $question->id }}][deduction]"
+                                            value="{{ $question->deduction }}">
                                     </div>
                                 </div>
                             </li>
                             <hr>
                         @endforeach
-                        <li>
-                            <div class="container border-secondary row d-flex align-items-center justify-content-end">
-                                <div class="col-auto alert alert-light p-1 m-1">
-                                    Nota: 100
-                                </div>
-                                <div class="col">
-                                    <label>O número do chamado foi informado?
-                                        <span class="text-danger"><strong>Punição gravíssima!</strong></span>
-                                    </label>
-                                    <input type="hidden" name="serious_question" value="O número do chamado foi informado?">
-                                </div>
-                                <div class="col-auto">
-                                    <div class="form-check">
-                                        <input class="form-check-input score-serious" type="radio" name="serious_response"
-                                               id="score_serious_sim1" value="0" checked>
-                                        <label class="form-check-label" for="score_serious_sim1">Sim</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input score-serious" type="radio" name="serious_response"
-                                               id="score_serious_nao2" value="100">
-                                        <label class="form-check-label" for="score_serious_nao2">Não</label>
-                                    </div>
-                                    <input type="hidden" name="serious_score" value="100">
-                                </div>
-                            </div>
-                        </li>
                     </ol>
                     <div>
                         <input type="hidden" id="totalScore" name="totalScore" value="0">
@@ -96,7 +90,6 @@
                         <button class="btn btn-dark w-50" type="submit">Salvar</button>
                     </div>
                 </form>
-                
             </div>
         </div>
     </main>

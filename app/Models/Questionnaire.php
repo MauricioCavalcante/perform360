@@ -20,5 +20,15 @@ class Questionnaire extends Model
         'response',
         'score',
         'version',
+        'deduction',  
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'deduction' => 'integer', 
     ];
 }

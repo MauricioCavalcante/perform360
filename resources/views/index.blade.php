@@ -42,7 +42,8 @@
             </div>
             <div class="row">
                 <div class="mt-5 col-auto" id="container" data-chart-data='@json($data)'></div>
-                <div class="mt-5 col-auto" id="history" data-chart-data="{{ $generalAverageData }}|{{ $clientAverageData }}"></div>
+                <div class="mt-5 col-auto" id="history"
+                    data-chart-data="{{ $generalAverageData }}|{{ $clientAverageData }}"></div>
 
             </div>
 
@@ -73,7 +74,17 @@
                             @endphp
                             @foreach ($users as $user)
                                 <tr class="text-center text-nowrap align-middle ">
-                                    <td>{{ $loop->iteration }}º</td>
+                                    <td>
+                                        @if ($loop->iteration == 1)
+                                            <img class="position" src="/img/gold.png" alt="">
+                                        @elseif ($loop->iteration == 2)
+                                            <img class="position" src="/img/silver.png" alt="">
+                                        @elseif ($loop->iteration == 3)
+                                            <img class="position" src="/img/bronze.png" alt="">
+                                        @else
+                                            {{ $loop->iteration }}º
+                                        @endif
+                                    </td>
                                     <td>
                                         <a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                                             href="{{ route('users.panel_users_details', ['id' => $user->id]) }}">

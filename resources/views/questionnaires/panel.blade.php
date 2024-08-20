@@ -34,7 +34,7 @@
                     </form>
                     <div class="ms-auto">
                         {{-- <strong>Soma das Notas: {{ $totalScore }} /100</strong> --}}
-                        <a href="{{ route('questionnaires.form') }}" class="btn btn-dark m-3">Adicionar Pergunta</a>
+                        <a href="{{ route('questions.form') }}" class="btn btn-dark m-3">Adicionar Pergunta</a>
                     </div>
                 </div>
                 {{-- Dentro da sua view panel.blade.php --}}
@@ -108,9 +108,9 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('questionnaires.edit', ['id' => $question->id]) }}"
+                                    <a href="{{ route('questions.edit', ['id' => $question->id]) }}"
                                         class="btn btn-sm btn-primary text-decoration-none text-white">Editar</a>
-                                    <form action="{{ route('questionnaires.delete', $question->id) }}" method="POST"
+                                    <form action="{{ route('questions.delete', $question->id) }}" method="POST"
                                         style="display: inline-block;"
                                         onsubmit="return confirm('Tem certeza que deseja excluir esta pergunta?');">
                                         @csrf
@@ -123,6 +123,55 @@
                     @endforeach
                 </tbody>
             </table>
+            <h2 class="mt-4">Punições</h2>
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr class="table-dark">
+                            <th>Pergunta</th>
+                            <th class="text-center">Desconto (%)</th>
+                            <th class="text-center">Cliente</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($deductions as $deduction)
+                            <tr>
+                                <td>{{ $deduction->question }}</td>
+                                <td class="text-center">{{ $deduction->score }}</td>
+                                <td class="text-center">
+                                    @php
+                                        $clientIds = json_decode($deduction->client_id);
+                                        $clientNames = [];
+                                        foreach ($clientIds as $clientId) {
+                                            $client = Client::find($clientId);
+                                            if ($client) {
+                                                $clientNames[] = $client->name;
+                                            }
+                                        }
+                                    @endphp
+                                    {{ implode(' / ', $clientNames) }}
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('questions.edit', ['id' => $deduction->id]) }}"
+                                            class="btn btn-sm btn-primary text-decoration-none text-white">Editar</a>
+                                        <form action="{{ route('questions.delete', $deduction->id) }}" method="POST"
+                                            style="display: inline-block;"
+                                            onsubmit="return confirm('Tem certeza que deseja excluir esta pergunta?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center">Nenhuma dedução disponível.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>

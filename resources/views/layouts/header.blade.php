@@ -30,7 +30,7 @@
                             <li class="nav-item"><a class="nav-link" href="{{ route('evaluations.index') }}">Avaliações</a></li>
                         @endif
                         <li class="nav-item"><a class="nav-link"
-                                href="{{ route('procedures.service_itinerary') }}">Procedimentos</a></li>
+                                href="{{ route('procedures.index') }}">Procedimentos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('warnings.index') }}">Avisos</a></li>
                         @if (Auth::user()->group_id === 2 || Auth::user()->group_id === 1)
                             <li class="nav-item dropdown">

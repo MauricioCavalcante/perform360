@@ -72,6 +72,7 @@ class TranscribeAudio implements ShouldQueue
                 $notification = new Notification();
                 $notification->notification = "Transcrição da avaliação " . $this->evaluationId . " finalizada!";
                 $notification->evaluation_id = $this->evaluationId;
+                $notification->type = 'Transcription';
                 $notification->save();
                 Log::info("Notification created for evaluation ID: " . $this->evaluationId);
 

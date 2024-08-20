@@ -1,0 +1,23 @@
+.radio-group input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    position: absolute;
+}            
+.radio-group input[type="radio"]:checked + span {
+    background-color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+label span {
+    display: block;
+    cursor: pointer;
+    background-color: transparent;
+    padding:  5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px black;
+    letter-spacing: .05em;
+    color: black;
+    transition: background-color .2s ease;
+}

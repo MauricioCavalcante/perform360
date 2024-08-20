@@ -68,4 +68,8 @@ class Evaluation extends Model
     {
         return $this->modified_at ? $this->modified_at->format('d/m/Y H:i:s') : 'N/A';
     }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

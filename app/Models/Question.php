@@ -14,6 +14,7 @@ class Question extends Model
     protected $fillable = [
         'question',
         'score',
+        'deduction',
         'client_id', 
         'version',
     ];

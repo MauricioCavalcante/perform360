@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use PhpOffice\PhpWord\IOFactory;
 
 class UserController extends Controller
 {
@@ -109,12 +110,6 @@ class UserController extends Controller
 
         return redirect()->route('users.panel_users_details', ['id' => $user->id])
             ->with('status', 'Dados atualizados com sucesso.');
-    }
-
-    public function procedure()
-    {
-
-        return view('procedures.service_itinerary');
     }
 
     public function destroy($id)
