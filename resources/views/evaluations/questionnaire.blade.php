@@ -4,6 +4,18 @@
 
 @section('head')
     <link rel="stylesheet" href="/css/evaluation.css">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+            }
+        }
+    </script>
+    <!-- Inclua o arquivo JavaScript -->
+    <script type="module" src="/js/ckeditor.js"></script>
+    <script type="module" src="/js/evaluation.js"></script>
 @endsection
 
 @section('content')
@@ -84,7 +96,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="feedback" class="form-label">Comentário</label>
-                        <textarea class="form-control" name="feedback" id="feedback" cols="15" rows="5"></textarea>
+                        <textarea class="form-control ckeditor" name="feedback"></textarea>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-dark w-50" type="submit">Salvar</button>
@@ -93,5 +105,4 @@
             </div>
         </div>
     </main>
-    <script src="/js/evaluation.js"></script>
 @endsection

@@ -2,15 +2,32 @@
 
 @section('title', 'Detalhes da Avaliação')
 
+@section('head')
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+        }
+    }
+</script>
+<!-- Inclua o arquivo JavaScript -->
+<script type="module" src="/js/ckeditor.js"></script>
+@endsection
+
 @section('content')
     <main class="container-custom container">
-        <section class="container ms-5 d-flex">
+        <section class="container ps-5">
             <div>
                 <h2>Avaliação - {{ $evaluation->id }}</h2>
                 <span><strong>Pontuação: </strong>{{ $evaluation->score }}</span><br>
-                <span><strong>Comentário:</strong> {{ $evaluation->feedback }}</span><br>
                 <span><strong>Avaliado em:</strong> {{ $evaluation->created_at }}</span>
+                <p style="word-wrap: break-word;"><strong>Comentário:</strong> {!! $evaluation->feedback !!}</p><br>
             </div>
+
+        </section>
+        <section class="d-flex">
             <div class="ms-auto me-5 mt-auto d-flex gap-2">
                 @if (Auth::user()->group_id == 2 || Auth::user()->group_id == 1)
                     <div>
@@ -89,7 +106,7 @@
                 <input type="hidden" id="totalScore" name="totalScore" value="0">
                 <div class="mb-3">
                     <label for="feedback" class="form-label">Comentário</label>
-                    <textarea class="form-control" name="feedback" id="feedback" cols="15" rows="5">{{ old('feedback', $evaluation->feedback) }}</textarea>
+                    <textarea class="form-control ckeditor" name="feedback" >{{ old('feedback', $evaluation->feedback) }}</textarea>
                 </div>
                 <div class="d-flex justify-content-center gap-3">
                     <button type="submit" class="btn btn-primary">Salvar</button>

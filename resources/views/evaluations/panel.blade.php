@@ -91,7 +91,7 @@
                                     </a>
                                 @endisset
                             </td>
-                            <td>{{ $evaluation->feedback }}</td>
+                            <td><div class="truncate-cell">{!! $evaluation->feedback !!}</div></td>
                         </tr>
                     @empty
                         <tr>

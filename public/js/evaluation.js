@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let totalDeductionPercentage = 0;
 
-        // Calcular a porcentagem total de dedução
+        
         deductionElements.forEach(element => {
             const questionId = element.getAttribute('data-question-id');
             const deductionPercentage = parseFloat(element.getAttribute('data-question-score'));
@@ -63,10 +63,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initialize label based on the initial state
+    
     updateScoreLabel();
 
-    // Attach event listeners to the radio buttons
+    
     deductionRadios.forEach(radio => {
         radio.addEventListener('change', updateScoreLabel);
     });

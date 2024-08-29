@@ -12,15 +12,14 @@ class CommentController extends Controller
     public function store(Request $request, $id)
     {
         $request->validate([
-            'text' => 'required|string|max:1000',
+            'text' => 'required|string',
         ]);
 
         $evaluation = Evaluation::findOrFail($id);
 
-        // Criação do comentário
         Comment::create([
             'evaluation_id' => $evaluation->id,
-            'user_id' => Auth::id(), // Usuário autenticado
+            'user_id' => Auth::id(),
             'text' => $request->input('text'),
         ]);
 
@@ -28,7 +27,7 @@ class CommentController extends Controller
     }
     public function update(Request $request, $id) {
         $request->validate([
-            'text' => 'required|string|max:1000',
+            'text' => 'required|string',
         ]);
     
         $comment = Comment::findOrFail($id); 

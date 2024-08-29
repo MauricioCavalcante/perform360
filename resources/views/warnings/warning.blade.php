@@ -4,6 +4,7 @@
 
 @section('head')
     <link rel="stylesheet" href="/css/warning.css">
+
 @endsection
 
 @section('content')
@@ -19,6 +20,7 @@
                 <p>{{ session('success') }}</p>
             </div>
         @endif
+
         <section>
             @if ($warnings->isEmpty())
                 <div class="d-flex m-5">
@@ -39,27 +41,32 @@
                                 aria-label="Slide {{ $index + 1 }}"></button>
                         @endforeach
                     </div>
+
                     <!-- Conteúdo do carrossel -->
                     <div class="carousel-inner">
                         @foreach ($warnings as $index => $warning)
-                            @if ($warning->image)
-                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('storage/' . $warning->image) }}" class="d-block"
-                                        alt="Imagem {{ $warning->title }}">
-                                    <div class="carousel-caption">
-                                        <h5>{{ $warning->title }}</h5>
-                                        <p>{{ $warning->body }}</p>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                    <div class="carousel-without-image">
-                                        <div class="text-center">
-                                            <h1>{{ $warning->title }}</h1>
-                                            <h3>{{ $warning->body }}</h3>
+                            @if ($warning->start)
+                                @if ($warning->image)
+                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                        <img src="{{ asset('storage/' . $warning->image) }}" class="d-block w-100"
+                                            alt="Imagem {{ $warning->title }}">
+                                        <div class="carousel-caption">
+                                            <div class="d-flex ">
+                                                <h5>{{ $warning->title }}</h5>
+                                                <p>{!! $warning->body !!}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                        <div class="carousel-without-image text-center ms-auto me-auto">
+                                            <div>
+                                                <h1>{{ $warning->title }}</h1>
+                                                <div>{!! $warning->body !!}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endif
                         @endforeach
                     </div>

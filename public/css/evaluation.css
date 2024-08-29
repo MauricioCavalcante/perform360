@@ -20,6 +20,16 @@ table {
         background-color: var(--primary-color);
         color: #fff;
     }
+    .truncate-cell {
+        max-width: 250px;
+        max-height: 30px;                 
+        overflow: hidden;                 
+        text-overflow: ellipsis;         
+        white-space: nowrap;                      
+    }
+    
+    
+    
 }
 .pagination {
     margin: 20px 0;

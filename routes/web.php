@@ -84,6 +84,7 @@ Route::middleware(['auth', AccessLevel::class])->group(function () {
         Route::get('/questionnaire/{id}', [QuestionController::class, 'questionnaire'])->name('questionnaires.questionnaire');
         Route::post('/questionnaire/{id}', [QuestionController::class, 'questionnaireSave'])->name('questionnaires.save');
         Route::post('/evaluations/{evaluationId}/questions', [QuestionController::class, 'questionnaireUpdate'])->name('questionnaires.update');
+        Route::post('/evaluations/retry/{id}', [EvaluationController::class, 'retry'])->name('evaluations.retry');
 
     });
     // Rotas de Usuários
@@ -121,13 +122,19 @@ Route::middleware(['auth', AccessLevel::class])->group(function () {
         Route::get('/create', [WarningController::class, 'create'])->name('warnings.create');
         Route::post('/store', [WarningController::class, 'store'])->name('warnings.store');
         Route::get('/panel', [WarningController::class, 'panel'])->name('warnings.panel');
+        Route::get('/warnings/{id}/edit', [WarningController::class, 'edit'])->name('warnings.edit');
         Route::put('/{id}', [WarningController::class, 'update'])->name('warnings.update');
         Route::delete('/{id}', [WarningController::class, 'delete'])->name('warnings.destroy');
     });
 
     Route::prefix('procedures')->group(function(){
-        Route::put('/update', [ProcedureController::class, 'update'])->name('procedures.update');
+        Route::get('/', [ProcedureController::class, 'index'])->name('procedures.index');
+        Route::post('/', [ProcedureController::class, 'store'])->name('procedures.store');
+        Route::get('/{id}/edit', [ProcedureController::class, 'edit'])->name('procedures.edit');
+        Route::put('/{id}', [ProcedureController::class, 'update'])->name('procedures.update');
+        Route::delete('/{id}', [ProcedureController::class, 'delete'])->name('procedures.destroy');        
     });
+    
 });
 
 // Inclui as rotas de autenticação do Laravel

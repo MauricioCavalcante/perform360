@@ -48,7 +48,7 @@ class QuestionController extends Controller
 
     public function form(Question $question = null)
     {
-        try {
+        try { 
             $clients = Client::all();
             return view('questionnaires.form', compact('question', 'clients'));
         } catch (\Exception $e) {
@@ -187,7 +187,7 @@ class QuestionController extends Controller
         // Validar os dados recebidos
         $request->validate([
             'totalScore' => ['required', 'numeric'],
-            'feedback' => ['nullable', 'string', 'max:255'],
+            'feedback' => ['nullable', 'string'],
             'questions' => ['required', 'array'],
             'questions.*.response' => ['required', 'numeric'],
             'questions.*.question' => ['required', 'string'],
@@ -261,7 +261,7 @@ class QuestionController extends Controller
         
         $request->validate([
             'totalScore' => ['required', 'numeric'],
-            'feedback' => ['nullable', 'string', 'max:255'],
+            'feedback' => ['nullable', 'string'],
             'questions' => ['required', 'array'],
             'questions.*.response' => ['required', 'numeric'],
             'questions.*.question' => ['required', 'string'],

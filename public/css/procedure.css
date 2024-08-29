@@ -9,3 +9,13 @@ details{
     }
 }
 
+.treinamento {
+    height: 1000px;
+    overflow: scroll;
+}
+
+.ckeditor {
+    width: 100%;
+    min-height: 300px;
+    border: 1px solid #ccc;
+}

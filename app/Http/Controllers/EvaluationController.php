@@ -41,6 +41,7 @@ class EvaluationController extends Controller
             $evaluation = new Evaluation();
             $evaluation->audio = $filePath;
             $evaluation->username = Auth::user()->name;
+            $evaluation->transcription = "Transcrição em andamento";
             $evaluation->save();
 
             TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
@@ -52,6 +53,18 @@ class EvaluationController extends Controller
             return redirect()->route('evaluations.index')->with("error", "Houve um problema ao transcrever o áudio.");
         }
     }
+    public function retry($id)
+    {
+        $evaluation = Evaluation::findOrFail($id);
+        $evaluation->transcription = "Transcrição em andamento";
+        $evaluation->save();
+
+        // Enfileirar novamente o job de transcrição
+        TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
+
+        return redirect()->back()->with("warning", "O Áudio está sendo reprocessado, por favor aguarde!");
+    }
+
 
     public function update(Request $request, $id)
     {
@@ -121,7 +134,7 @@ class EvaluationController extends Controller
     public function revision($id)
     {
         $evaluation = Evaluation::findOrFail($id);
-        
+
         if (!$evaluation->revision_requested) {
             $notification = new Notification();
             $notification->notification = "Revisão solicitada para avaliação " . $evaluation->id . " por " . Auth::user()->name . "!";

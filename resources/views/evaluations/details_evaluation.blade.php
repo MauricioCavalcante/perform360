@@ -13,7 +13,7 @@
             <div class="d-flex justify-content-center align-middle alert alert-success text-center">
                 <p>{{ session('success') }}</p>
             </div>
-        @endif        
+        @endif
         @if (session('info'))
             <div class="d-flex justify-content-center align-middle alert alert-primary text-center">
                 <p>{{ session('info') }}</p>
@@ -42,17 +42,27 @@
                 </div>
                 <div>
                     <h5>Transcrição</h5>
-                    @if ($evaluation->transcription)
-                    <div style="max-height: 600px; overflow:auto">
-                        <p>{{ $evaluation->transcription }}</p>
-                    </div>
-                    @else
+                    @if ($evaluation->transcription === 'Transcrição em andamento')
                         <div class="d-flex m-5">
                             <div class="m-1" id="loader"></div>
                             <p class="ms-2">Transcrição em andamento, aguarde!</p>
                         </div>
+                    @elseif ($evaluation->transcription === 'Erro ao transcrever áudio')
+                        <div class="mt-4">
+                            <p class="m-1">{{ $evaluation->transcription }}</p>
+                            <form action="{{ route('evaluations.retry', $evaluation->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-danger">Tentar Novamente</button>
+                            </form>
+                        </div>
+                    @elseif ($evaluation->transcription)
+                        <div style="max-height: 600px; overflow:auto">
+                            <p>{{ $evaluation->transcription }}</p>
+                        </div>
                     @endif
                 </div>
+                
+
             </div>
             <div class="col">
                 <div class="d-flex align-items-center justify-content-end mb-2 gap-2">
@@ -127,7 +137,7 @@
                         </tr>
                         <tr>
                             <th>Feedback do Chamado</th>
-                            <td>{{ $evaluation->feedback }}</td>
+                            <td class="truncate-cell">{!! $evaluation->feedback !!}</td>
                         </tr>
                     </table>
                     @if ($evaluation->score || $evaluation->feedback)
@@ -242,15 +252,11 @@
     </main>
     <script>
         function editComment(commentId) {
-            // Esconder todos os formulários de edição
             document.querySelectorAll('.edit-comment-form').forEach(form => form.style.display = 'none');
-
-            // Mostrar o formulário de edição específico
             document.getElementById('edit-comment-' + commentId).style.display = 'block';
         }
 
         function cancelEdit(commentId) {
-            // Esconder o formulário de edição específico
             document.getElementById('edit-comment-' + commentId).style.display = 'none';
         }
     </script>
