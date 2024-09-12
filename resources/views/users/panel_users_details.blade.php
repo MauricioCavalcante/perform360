@@ -209,7 +209,7 @@
                                 <td>{{ $evaluation->client_id ? $evaluation->client->name : 'Não definido' }}</td>
                                 <td>{{ $evaluation->protocol }}</td>
                                 <td>{{ $evaluation->score }}</td>
-                                <td>{{ $evaluation->feedback }}</td>
+                                <td><div class="truncate-cell">{!! $evaluation->feedback !!}</div></td>
                             </tr>
                         @endif
                     @endforeach

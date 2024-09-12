@@ -55,7 +55,7 @@ class WarningController extends Controller
 
     public function create()
     {
-        $now = Carbon::now('America/Sao_Paulo')->setTimezone('UTC');
+        $now = Carbon::now('America/Sao_Paulo');
         $nowFormatted = $now->format('Y-m-d\TH:i');
 
         return view('warnings.form_warning', ['now' => $nowFormatted]);
@@ -63,10 +63,6 @@ class WarningController extends Controller
     public function edit($id)
     {
         $warning = Warning::findOrFail($id);
-        $warning->start = $warning->start ? Carbon::parse($warning->start)->timezone('UTC')->format('Y-m-d\TH:i') : null;
-        $warning->finish = $warning->finish ? Carbon::parse($warning->finish)->timezone('UTC')->format('Y-m-d\TH:i') : null;
-
-
         return view('warnings.form_warning', compact('warning'));
     }
 
@@ -98,7 +94,7 @@ class WarningController extends Controller
             $warning->finish = $request->input('finish');
             $warning->save();
 
-            return redirect()->route('warnings.index')->with('success', 'Aviso editado com sucesso.');
+            return redirect()->route('warnings.panel')->with('success', 'Aviso editado com sucesso.');
         } catch (\Exception $e) {
             Log::error('Erro ao editar aviso: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Erro ao editar aviso. Por favor, tente novamente mais tarde.']);
@@ -131,7 +127,7 @@ class WarningController extends Controller
                 'finish' => $request->input('finish') ? Carbon::parse($request->input('finish'))->timezone('America/Sao_Paulo')->format('Y-m-d H:i:s') : null,
             ]);
 
-            return redirect()->route('warnings.index')->with('success', 'Aviso adicionado com sucesso.');
+            return redirect()->route('warnings.panel')->with('success', 'Aviso adicionado com sucesso.');
         } catch (\Exception $e) {
             Log::error('Erro ao criar aviso: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Erro ao criar aviso. Por favor, tente novamente mais tarde.']);
@@ -146,10 +142,10 @@ class WarningController extends Controller
             $warnings->delete();
 
 
-            return redirect()->route('warnings.index')->with('success', 'Aviso excluído com sucesso.');
+            return redirect()->route('warnings.panel')->with('success', 'Aviso excluído com sucesso.');
         } catch (\Exception $e) {
             Log::error("Erro ao excluir o aviso: " . $e->getMessage());
-            return redirect()->route('warnings.index')->with('error', 'Houve um problema ao excluir o aviso.');
+            return redirect()->route('warnings.panel')->with('error', 'Houve um problema ao excluir o aviso.');
         }
     }
 }

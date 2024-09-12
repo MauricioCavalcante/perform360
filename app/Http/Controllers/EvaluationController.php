@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Evaluation;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class EvaluationController extends Controller
         try {
             $request->validate([
                 'audio' => 'required|file|max:102400',
+                'referent' => 'nullable'
             ]);
 
             $file = $request->file('audio');
@@ -40,6 +42,7 @@ class EvaluationController extends Controller
 
             $evaluation = new Evaluation();
             $evaluation->audio = $filePath;
+            $evaluation->referent = $request->input('referent');
             $evaluation->username = Auth::user()->name;
             $evaluation->transcription = "Transcrição em andamento";
             $evaluation->save();
@@ -59,7 +62,6 @@ class EvaluationController extends Controller
         $evaluation->transcription = "Transcrição em andamento";
         $evaluation->save();
 
-        // Enfileirar novamente o job de transcrição
         TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
 
         return redirect()->back()->with("warning", "O Áudio está sendo reprocessado, por favor aguarde!");
@@ -84,6 +86,7 @@ class EvaluationController extends Controller
             $evaluation->user_id = $request->input('user_id');
             $evaluation->protocol = $request->input('protocol');
             $evaluation->client_id = $request->input('client_id');
+            $evaluation->referent = $request->input('referent');
             $evaluation->save();
 
             return redirect()->route('evaluations.details_evaluation', $evaluation->id)->with('success', 'Avaliação atualizada!');
@@ -114,8 +117,12 @@ class EvaluationController extends Controller
         $evaluation = Evaluation::findOrFail($id);
         $user = User::all();
         $client = Client::all();
+        $formattedDate = null;
+        if($evaluation->referent){
+            $formattedDate = Carbon::parse($evaluation->referent)->locale('pt_BR')->translatedFormat('F Y');
+        }
 
-        return view('evaluations.details_evaluation', compact('id', 'user', 'client', 'evaluation'));
+        return view('evaluations.details_evaluation', compact('id', 'user', 'client', 'evaluation', 'formattedDate'));
     }
     public function showEvaluationDetails($id)
     {

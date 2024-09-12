@@ -61,7 +61,7 @@
                         </div>
                     @endif
                 </div>
-                
+
 
             </div>
             <div class="col">
@@ -128,6 +128,12 @@
                             @endif
                         @endauth
                         <tr>
+                            <th>Referencia</th>
+                            @if ($evaluation->referent)
+                                <td>{{ $formattedDate }}</td>
+                            @endif
+                        </tr>
+                        <tr>
                             <th>Data de Registro do Chamado</th>
                             <td>{{ $evaluation->created_at }}</td>
                         </tr>
@@ -163,7 +169,14 @@
                             </select>
                             <x-input-error :messages="$errors->get('id_user')" />
                         </div>
-
+                        <div>
+                            <div class="d-flex mt-3">
+                                <label class="m-1 text-nowrap align-items-center" for="referent"><Strong>Data
+                                        referência:</Strong></label>
+                                <input class="form-control date" type="date" name="referent"
+                                    value="{{ old('referent', $evaluation->referent) }}">
+                            </div>
+                        </div>
                         <div>
                             <label class="form-label mt-2" for="protocol"><strong>Protocolo de
                                     Atendimento</strong></label>

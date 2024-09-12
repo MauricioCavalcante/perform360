@@ -93,3 +93,11 @@
         transform: rotate(calc((var(--fill) * 180deg)));
     }
 }
+
+.truncate-cell {
+    max-width: 250px;
+    max-height: 30px;                 
+    overflow: hidden;                 
+    text-overflow: ellipsis;         
+    white-space: nowrap;                      
+}

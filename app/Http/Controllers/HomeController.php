@@ -25,17 +25,17 @@ class HomeController extends Controller
 
         $evaluationCountUser = Evaluation::select('user_id', DB::raw('COUNT(*) as total'))
             ->whereNotNull('user_id')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->whereBetween('referent', [$startOfMonth, $endOfMonth])
             ->groupBy('user_id')
             ->get();
 
         $averageScores = Evaluation::select('user_id', DB::raw('AVG(score) as average_score'))
             ->groupBy('user_id')
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->whereBetween('referent', [$startOfMonth, $endOfMonth])
             ->get();
 
 
-        $monthlyAverageScore = Evaluation::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+        $monthlyAverageScore = Evaluation::whereBetween('referent', [$startOfMonth, $endOfMonth])
             ->whereNotNull('score')
             ->average('score');
         $monthlyAverageScore = number_format($monthlyAverageScore, 2, '.', '');
@@ -53,7 +53,7 @@ class HomeController extends Controller
             ];
         });
 
-        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
+        $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(referent, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
             ->whereNotNull('score')
             ->groupBy('month')
             ->orderBy('month')
@@ -66,7 +66,7 @@ class HomeController extends Controller
             ];
         });
 
-        $clientMonthlyAverages = Evaluation::select('client_id', DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
+        $clientMonthlyAverages = Evaluation::select('client_id', DB::raw('DATE_FORMAT(referent, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
             ->whereNotNull('score')
             ->groupBy('client_id', 'month')
             ->orderBy('client_id')

@@ -15,6 +15,7 @@ class Evaluation extends Model
         'protocol',
         'username',
         'audio',
+        'referent',
         'transcription',
         'modified_at',
         'score',
