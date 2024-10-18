@@ -52,12 +52,65 @@
                             <p class="m-1">{{ $evaluation->transcription }}</p>
                             <form action="{{ route('evaluations.retry', $evaluation->id) }}" method="POST">
                                 @csrf
+                                <div class="row g-3 d-flex align-items-center">
+                                    <div class="mb-3 d-flex align-items-center" style="width: auto;">
+                                        <label for="model" class="form-label m-1">Transcrição:</label>
+                                        <select class="form-select" id="model" name="model">
+                                            <option value="turbo">Turbo</option>
+                                            <option value="tiny">Mínimo</option>
+                                            <option value="base">Base</option>
+                                            <option value="small">Pequeno</option>
+                                            <option value="medium">Médio</option>
+                                            <option value="large-v3">Grande</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto mb-2 mt-1">
+                                        <span id="alertModel" class="form-text">uso de memória VRAM (6GB)</span>
+                                    </div>
+                                </div>
                                 <button type="submit" class="btn btn-sm btn-danger">Tentar Novamente</button>
                             </form>
                         </div>
                     @elseif ($evaluation->transcription)
                         <div style="max-height: 600px; overflow:auto">
                             <p>{{ $evaluation->transcription }}</p>
+                        </div>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o modelo de
+                                            transcrição:</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('evaluations.retry', $evaluation->id) }}" method="post">
+                                            @csrf
+                                            <div class="row g-3 d-flex align-items-center">
+                                                <div class="mb-3 d-flex align-items-center" style="width: auto;">
+                                                    <label for="model" class="form-label m-1">Transcrição:</label>
+                                                    <select class="form-select" id="model" name="model">
+                                                        <option value="turbo">Turbo</option>
+                                                        <option value="tiny">Mínimo</option>
+                                                        <option value="base">Base</option>
+                                                        <option value="small">Pequeno</option>
+                                                        <option value="medium">Médio</option>
+                                                        <option value="large-v3">Grande</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-auto mb-2 mt-1">
+                                                    <span id="alertModel" class="form-text">uso de memória VRAM (6GB)</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-dark">Transcrever</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -146,9 +199,20 @@
                             <td class="truncate-cell">{!! $evaluation->feedback !!}</td>
                         </tr>
                     </table>
+                </div>
+                <div class="d-flex gap-2 m-2">
                     @if ($evaluation->score || $evaluation->feedback)
-                        <a href="{{ route('evaluations.details_questionnaire', ['id' => $evaluation->id]) }}">Ver
+                        <a class="btn btn-light"
+                            href="{{ route('evaluations.details_questionnaire', ['id' => $evaluation->id]) }}">Ver
                             resultado</a>
+                    @endif
+                    @if (Auth::user()->group_id != 4)
+                        <div>
+                            <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
+                                Transcrever novamente
+                            </button>
+                        </div>
                     @endif
                 </div>
                 <div id="formEdit" style="display: none;">
@@ -199,7 +263,7 @@
                             <x-input-error class="mt-2" :messages="$errors->get('client_id')" />
                         </div>
                         <div class="d-flex justify-content-center mt-3">
-                            <button type="submit" class="btn btn-success ps-5 pe-5">Salvar</button>
+                            <button type="submit" class="btn btn-dark ps-5 pe-5">Salvar</button>
                         </div>
                     </form>
                 </div>

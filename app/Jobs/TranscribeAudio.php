@@ -17,11 +17,14 @@ class TranscribeAudio implements ShouldQueue
 
     protected $evaluationId;
     protected $filePath;
+    protected $model;
 
-    public function __construct($evaluationId, $filePath)
+    public function __construct($evaluationId, $filePath, $model)
     {
         $this->evaluationId = $evaluationId;
         $this->filePath = $filePath;
+        $this->model = $model;
+
 
         Log::info("Audio transcription job started for evaluation ID: " . $this->evaluationId);
     }
@@ -36,7 +39,7 @@ class TranscribeAudio implements ShouldQueue
         $pythonExecutable = base_path('venv\\Scripts\\python.exe');
         $pythonScriptPath = base_path('app\\Scripts\\transcribe_audio.py');
 
-        $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath));
+        $command = escapeshellcmd("$pythonExecutable $pythonScriptPath " . escapeshellarg($this->filePath) . " " . escapeshellarg($this->model));
         $output = shell_exec($command);
     
         if ($output === null) {

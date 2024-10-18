@@ -33,7 +33,8 @@ class EvaluationController extends Controller
         try {
             $request->validate([
                 'audio' => 'required|file|max:102400',
-                'referent' => 'nullable'
+                'referent' => 'nullable',
+                'model' => 'string',
             ]);
 
             $file = $request->file('audio');
@@ -47,7 +48,7 @@ class EvaluationController extends Controller
             $evaluation->transcription = "Transcrição em andamento";
             $evaluation->save();
 
-            TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
+            TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"), $request->input('model'));
 
             return redirect()->route('evaluations.index')->with("warning", "O Áudio está sendo transcrito, por favor aguarde!");
         } catch (\Exception $e) {
@@ -56,13 +57,17 @@ class EvaluationController extends Controller
             return redirect()->route('evaluations.index')->with("error", "Houve um problema ao transcrever o áudio.");
         }
     }
-    public function retry($id)
+    public function retry(Request $request, $id)
     {
+        $request->validate([
+            'model' => 'string',
+        ]);
+
         $evaluation = Evaluation::findOrFail($id);
         $evaluation->transcription = "Transcrição em andamento";
         $evaluation->save();
 
-        TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"));
+        TranscribeAudio::dispatch($evaluation->id, storage_path("app/{$evaluation->audio}"), $request->input('model'));
 
         return redirect()->back()->with("warning", "O Áudio está sendo reprocessado, por favor aguarde!");
     }

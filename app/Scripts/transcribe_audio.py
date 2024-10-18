@@ -8,16 +8,17 @@ logging.basicConfig(
     level=logging.INFO 
 )
 
-def transcrever_audio(audio_file):
+def transcrever_audio(audio_file, model_name):
     try:
         logging.info(f"Iniciando transcrição para o arquivo: {audio_file}")
+        logging.info(f"modelo de transcrição: {model_name}")
 
-        model = whisper.load_model("large")
+        model = whisper.load_model(model_name)
         
-        result = model.transcribe(audio_file)
+        result = model.transcribe(audio_file, language="pt")
         transcricao = result.get('text', '')
 
-        logging.info(f"Transcrição concluída com sucesso: {transcricao}")
+        logging.info(f"Transcrição concluída com sucesso: {transcricao} , transcrição modelo {model_name}" )
 
         return transcricao
 
@@ -29,15 +30,16 @@ def transcrever_audio(audio_file):
         return None
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        logging.error("Caminho do arquivo de áudio não fornecido.")
+    if len(sys.argv) < 3:  
+        logging.error("Caminho do arquivo de áudio ou modelo não fornecido.")
         sys.exit(1)
 
     audio_file = sys.argv[1]
-    
+    model_name = sys.argv[2] 
+
     sys.stdout.reconfigure(encoding='utf-8')
     
-    transcricao = transcrever_audio(audio_file)
+    transcricao = transcrever_audio(audio_file, model_name)
 
     if transcricao is not None:
         print(transcricao)

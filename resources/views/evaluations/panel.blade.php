@@ -7,7 +7,9 @@
 @endsection
 
 @section('content')
- 
+    @php
+        use Carbon\Carbon;
+    @endphp
     <main class="container-custom container">
         <div class="d-flex">
             <div>
@@ -41,6 +43,7 @@
                         <th>Atendente</th>
                         <th>Cliente</th>
                         <th>Registro</th>
+                        <th>Referência</th>
                         <th>Avaliação</th>
                         <th>FeedBack</th>
                     </tr>
@@ -79,6 +82,18 @@
                                 {{ $evaluation->created_at }}
                             </td>
                             <td>
+                                @php
+                                    $formattedDate = null;
+                                    if ($evaluation->referent) {
+                                        $formattedDate = Carbon::parse($evaluation->referent)
+                                            ->translatedFormat('m/Y');
+                                    }
+                                @endphp
+                                @if ($evaluation->referent)
+                                    {{ $formattedDate }}
+                                @endif
+                            </td>
+                            <td>
                                 @isset($evaluation->client_id)
                                     <a href="{{ route('evaluations.details_evaluation', ['id' => $evaluation->id]) }}"
                                         class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
@@ -91,7 +106,9 @@
                                     </a>
                                 @endisset
                             </td>
-                            <td><div class="truncate-cell">{!! $evaluation->feedback !!}</div></td> 
+                            <td>
+                                <div class="truncate-cell">{!! $evaluation->feedback !!}</div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -100,7 +117,7 @@
                     @endforelse
                 </tbody>
             </table>
-            {{$pagination->links()}}
+            {{ $pagination->links() }}
         </div>
     </main>
 @endsection

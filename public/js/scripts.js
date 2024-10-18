@@ -114,3 +114,34 @@ function updatePassword(){
     }
 }
 
+
+
+document.getElementById('model').addEventListener('change', function() {
+    const selectedModel = this.value;
+    let memoryUsage = '';
+
+    switch (selectedModel) {
+        case 'tiny':
+            memoryUsage = 'uso de memória VRAM (1GB)';
+            break;
+        case 'base':
+            memoryUsage = 'uso de memória VRAM (1GB)';
+            break;
+        case 'small':
+            memoryUsage = 'uso de memória VRAM (2GB)';
+            break;
+        case 'medium':
+            memoryUsage = 'uso de memória VRAM (5GB)';
+            break;
+        case 'large-v3':
+            memoryUsage = 'uso de memória VRAM (10GB)';
+            break;
+        case 'turbo':
+            memoryUsage = 'uso de memória VRAM (6GB)';
+            break;
+        default:
+            memoryUsage = '';
+    }
+
+    document.getElementById('alertModel').textContent = memoryUsage;
+});

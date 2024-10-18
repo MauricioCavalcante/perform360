@@ -16,7 +16,6 @@ class HomeController extends Controller
         $endOfMonth = Carbon::now()->endOfMonth();
 
         $clients = Client::all()->keyBy('id');
-
         $users = User::where('group_id', 4)->get();
 
         $evaluations = Evaluation::all();
@@ -34,12 +33,11 @@ class HomeController extends Controller
             ->whereBetween('referent', [$startOfMonth, $endOfMonth])
             ->get();
 
-
         $monthlyAverageScore = Evaluation::whereBetween('referent', [$startOfMonth, $endOfMonth])
             ->whereNotNull('score')
             ->average('score');
         $monthlyAverageScore = number_format($monthlyAverageScore, 2, '.', '');
-        
+
         $countEvaluationClient = Evaluation::select('client_id', DB::raw('COUNT(*) as total'))
             ->whereNotNull('client_id')
             ->groupBy('client_id')
@@ -53,6 +51,7 @@ class HomeController extends Controller
             ];
         });
 
+        // Média geral por mês
         $monthlyAverages = Evaluation::select(DB::raw('DATE_FORMAT(referent, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
             ->whereNotNull('score')
             ->groupBy('month')
@@ -66,6 +65,7 @@ class HomeController extends Controller
             ];
         });
 
+        // Média por cliente
         $clientMonthlyAverages = Evaluation::select('client_id', DB::raw('DATE_FORMAT(referent, "%Y-%m") as month'), DB::raw('AVG(score) as average_score'))
             ->whereNotNull('score')
             ->groupBy('client_id', 'month')
